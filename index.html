@@ -20,14 +20,14 @@
     from "https://www.gstatic.com/firebasejs/10.12.0/firebase-database.js";
 
   const firebaseConfig = {
-    apiKey: "AIzaSyCGjYDn11Mwcxu8yBNhS1GDQpEXFxOLCKM",
-    authDomain: "diganta-pathagar-d1197.firebaseapp.com",
-    databaseURL: "https://diganta-pathagar-d1197-default-rtdb.asia-southeast1.firebasedatabase.app",
-    projectId: "diganta-pathagar-d1197",
-    storageBucket: "diganta-pathagar-d1197.firebasestorage.app",
-    messagingSenderId: "433696583621",
-    appId: "1:433696583621:web:c729092423f8ff560765ac",
-    measurementId: "G-RXE6MK7XDN"
+    apiKey: "AIzaSyAoQ5oFiH8yXtmagizH-veKJJ0fjP-nEzQ",
+    authDomain: "diganta-pathagar-41465.firebaseapp.com",
+    projectId: "diganta-pathagar-41465",
+    storageBucket: "diganta-pathagar-41465.firebasestorage.app",
+    messagingSenderId: "316538062426",
+    appId: "1:316538062426:web:9be0750b1b22eb895f3a63",
+    measurementId: "G-V0LS562L4Q",
+    databaseURL: "https://diganta-pathagar-41465-default-rtdb.asia-southeast1.firebasedatabase.app"
   };
 
   const app = initializeApp(firebaseConfig);
@@ -193,7 +193,6 @@ select.inp{cursor:pointer;}
 .offline-bar{background:#c0392b;color:#fff;text-align:center;padding:7px;font-size:13px;display:none;}
 .offline-bar.show{display:block;}
 
-/* Logo tap ripple */
 .h-logo.tapped{background:rgba(201,168,76,.35) !important;}
 </style>
 </head>
@@ -208,12 +207,9 @@ select.inp{cursor:pointer;}
 const CATS=["উপন্যাস","ছোটগল্প","কবিতা","নাটক","সায়েন্স ফিকশন","জীবনী","ইতিহাস","ধর্মীয়","প্রবন্ধ","শিশুসাহিত্য","বিজ্ঞান","অন্যান্য"];
 const LOGO_SVG=`<svg viewBox="0 0 36 36" fill="none" xmlns="http://www.w3.org/2000/svg"><rect x="3" y="26" width="30" height="4" rx="2" fill="#c9a84c"/><path d="M18 10 Q11 6 5 8 L5 22 Q11 20 18 24 Q25 20 31 22 L31 8 Q25 6 18 10Z" stroke="#c9a84c" stroke-width="1.4" fill="rgba(201,168,76,0.08)"/><line x1="18" y1="10" x2="18" y2="24" stroke="#c9a84c" stroke-width="1"/><circle cx="18" cy="8" r="2" fill="#c9a84c" opacity=".5"/></svg>`;
 
-// ══════════════════════════════
-// STATE
-// ══════════════════════════════
 let S={
-  screen:'loading',  // loading | app
-  role:'member',     // member | admin
+  screen:'loading',
+  role:'member',
   tab:0,
   books:{}, members:{}, borrows:{}, passes:[],
   modal:null, form:{},
@@ -226,9 +222,6 @@ let S={
   complaints:{}, complaintText:''
 };
 
-// ══════════════════════════════
-// FIREBASE
-// ══════════════════════════════
 function fb(){return window._fb;}
 function fbPush(p,v){const{db,ref,push}=fb();return push(ref(db,p),v);}
 function fbRemove(p){const{db,ref,remove}=fb();return remove(ref(db,p));}
@@ -250,9 +243,6 @@ function initListeners(){
   S.syncLive=true;
 }
 
-// ══════════════════════════════
-// TOAST
-// ══════════════════════════════
 function toast(msg,type='ok'){
   const w=document.getElementById('toasts');
   const el=document.createElement('div');
@@ -260,20 +250,13 @@ function toast(msg,type='ok'){
   w.appendChild(el);setTimeout(()=>el.remove(),3500);
 }
 
-// ══════════════════════════════
-// ADMIN LOGIN (hidden)
-// Logo 3x tap OR Ctrl+Shift+A
-// ══════════════════════════════
 function handleLogoTap(){
   S.logoTapCount++;
   const logo=document.querySelector('.h-logo');
   if(logo){logo.classList.add('tapped');setTimeout(()=>logo.classList.remove('tapped'),200);}
   if(S.logoTapTimer)clearTimeout(S.logoTapTimer);
   S.logoTapTimer=setTimeout(()=>{S.logoTapCount=0;},1200);
-  if(S.logoTapCount>=3){
-    S.logoTapCount=0;
-    openAdminLogin();
-  }
+  if(S.logoTapCount>=3){S.logoTapCount=0;openAdminLogin();}
 }
 
 document.addEventListener('keydown',e=>{
@@ -281,13 +264,11 @@ document.addEventListener('keydown',e=>{
 });
 
 function openAdminLogin(){
-  if(S.role==='admin')return; // already admin
+  if(S.role==='admin')return;
   S.showAdminLogin=true;S.adminPwInput='';render();
   setTimeout(()=>{const f=document.getElementById('adminPwField');if(f)f.focus();},100);
 }
-
 function closeAdminLogin(){S.showAdminLogin=false;S.adminPwInput='';render();}
-
 function tryAdminLogin(){
   const pw=S.adminPwInput.trim();
   if(!pw){toast('পাসওয়ার্ড দিন','err');return;}
@@ -298,27 +279,18 @@ function tryAdminLogin(){
     toast('ভুল পাসওয়ার্ড!','err');
   }
 }
+function adminLogout(){S.role='member';S.tab=0;toast('অ্যাডমিন মোড বন্ধ');render();}
 
-function adminLogout(){
-  S.role='member';S.tab=0;toast('অ্যাডমিন মোড বন্ধ');render();
-}
-
-// ══════════════════════════════
-// BOOKS
-// ══════════════════════════════
 function saveBook(){
   const{title,author,cat,total,isbn,shelf,editId}=S.form;
   if(!title||!cat)return toast('বইয়ের নাম ও বিভাগ আবশ্যক','err');
   const tot=parseInt(total)||1;
-  // Duplicate check
   if(!editId){
     const dup=Object.values(S.books).find(b=>
       b.title.trim().toLowerCase()===title.trim().toLowerCase()&&
       (b.author||'').trim().toLowerCase()===(author||'').trim().toLowerCase()
     );
-    if(dup){
-      if(!confirm(`"${title}" (${author||'অজানা লেখক'}) নামে বই আগেই আছে!\nআবারও যোগ করবেন?`))return;
-    }
+    if(dup){if(!confirm(`"${title}" নামে বই আগেই আছে!\nআবারও যোগ করবেন?`))return;}
   }
   if(editId){
     const old=S.books[editId];
@@ -343,9 +315,6 @@ function deleteBook(id){
   fbRemove('books/'+id).then(()=>toast('বই মুছে গেছে'));
 }
 
-// ══════════════════════════════
-// MEMBERS
-// ══════════════════════════════
 function saveMember(){
   const{name,phone,address,editId}=S.form;
   if(!name||!phone)return toast('নাম ও ফোন আবশ্যক','err');
@@ -370,9 +339,6 @@ function deleteMember(id){
   fbRemove('members/'+id).then(()=>toast('সদস্য মুছে গেছে'));
 }
 
-// ══════════════════════════════
-// BORROW
-// ══════════════════════════════
 function issueBorrow(){
   if(!S.borrow.bookId)return toast('বই সিলেক্ট করুন','err');
   if(!S.borrow.memberId)return toast('সদস্য সিলেক্ট করুন','err');
@@ -398,9 +364,6 @@ function returnBorrow(id){
   });
 }
 
-// ══════════════════════════════
-// PASSWORD
-// ══════════════════════════════
 function addPass(){
   const pw=(S.form.newPass||'').trim();
   if(pw.length<6)return toast('কমপক্ষে ৬ অক্ষর','err');
@@ -418,10 +381,6 @@ function removePass(pw){
   },{onlyOnce:true});
 }
 
-
-// ══════════════════════════════
-// COMPLAINTS
-// ══════════════════════════════
 function submitComplaint(){
   const txt=(S.complaintText||'').trim();
   if(!txt)return toast('অভিযোগ লিখুন','err');
@@ -429,19 +388,12 @@ function submitComplaint(){
   fbPush('complaints',{text:txt,sentAt:nowDate(),read:false})
     .then(()=>{S.complaintText='';toast('অভিযোগ পাঠানো হয়েছে ✓');render();});
 }
-
-function markComplaintRead(id){
-  fbUpdate('complaints/'+id,{read:true});
-}
-
+function markComplaintRead(id){fbUpdate('complaints/'+id,{read:true});}
 function deleteComplaint(id){
   if(!confirm('অভিযোগটি মুছে দেবেন?'))return;
   fbRemove('complaints/'+id).then(()=>toast('মুছে গেছে'));
 }
 
-// ══════════════════════════════
-// HELPERS
-// ══════════════════════════════
 function nowDate(){return new Date().toLocaleDateString('bn-BD',{day:'numeric',month:'long',year:'numeric'});}
 function futureDate(days){const d=new Date();d.setDate(d.getDate()+days);return d.toLocaleDateString('bn-BD',{day:'numeric',month:'long',year:'numeric'});}
 function memberBorrowCount(mId){return Object.values(S.borrows).filter(b=>b.memberId===mId&&!b.ret).length;}
@@ -450,9 +402,6 @@ function membersArr(){return Object.entries(S.members).map(([id,v])=>({id,...v})
 function borrowsArr(){return Object.entries(S.borrows).map(([id,v])=>({id,...v}));}
 function esc(s){if(!s)return'';return String(s).replace(/&/g,'&amp;').replace(/</g,'&lt;').replace(/>/g,'&gt;').replace(/"/g,'&quot;').replace(/'/g,'&#39;');}
 
-// ══════════════════════════════
-// RENDER
-// ══════════════════════════════
 function render(){
   document.getElementById('app').innerHTML=
     S.screen==='loading'
@@ -462,7 +411,6 @@ function render(){
 }
 
 function attachEvents(){
-  // logo tap
   const logo=document.querySelector('.h-brand');
   if(logo)logo.onclick=handleLogoTap;
 
@@ -523,12 +471,10 @@ function attachEvents(){
   },{once:true});
 }
 
-// ── APP SHELL ──
 function renderApp(){
   const isAdmin=S.role==='admin';
   const tabs=['ড্যাশবোর্ড','বইয়ের তালিকা','সদস্যবৃন্দ','অনুসন্ধান','অভিযোগ'];
   if(isAdmin){tabs.splice(3,0,'বই ধার');tabs.push('সেটিংস');}
-
   return`
     <div class="header">
       <div class="h-top">
@@ -566,7 +512,6 @@ function renderTab(){
   return'';
 }
 
-// ── ADMIN LOGIN OVERLAY ──
 function renderAdminLoginOverlay(){
   return`<div class="admin-overlay" onclick="if(event.target===this)closeAdminLogin()">
     <div class="admin-card">
@@ -585,7 +530,6 @@ function renderAdminLoginOverlay(){
   </div>`;
 }
 
-// ── DASH ──
 function renderDash(){
   const books=booksArr(),members=membersArr(),borrows=borrowsArr();
   const pending=borrows.filter(b=>!b.ret).length;
@@ -610,7 +554,6 @@ function renderDash(){
     </div>`;
 }
 
-// ── BOOKS ──
 function renderBooks(){
   const isAdmin=S.role==='admin';
   const q=S.search.toLowerCase().trim();
@@ -649,7 +592,6 @@ function renderBooks(){
   `;
 }
 
-// ── MEMBERS ──
 function renderMembers(){
   const isAdmin=S.role==='admin';
   const q=S.search.toLowerCase().trim();
@@ -683,7 +625,6 @@ function renderMembers(){
   `;
 }
 
-// ── BORROW ──
 function renderBorrow(){
   const pending=borrowsArr().filter(b=>!b.ret);
   const done=borrowsArr().filter(b=>b.ret).slice(-20).reverse();
@@ -691,7 +632,6 @@ function renderBorrow(){
   const bkList=booksArr().filter(b=>b.avail>0&&(!bkQ||b.title.toLowerCase().includes(bkQ)||b.author.toLowerCase().includes(bkQ)));
   const mbQ=S.borrow.memberQuery.toLowerCase();
   const mbList=membersArr().filter(m=>!mbQ||m.name.toLowerCase().includes(mbQ)||m.phone.includes(mbQ));
-
   return`<div class="card">
     <div class="card-title">বই ধার দিন</div>
     <div class="borrow-section">
@@ -750,7 +690,6 @@ function renderBorrow(){
   </div>`;
 }
 
-// ── SEARCH ──
 function renderSearch(){
   const q=S.search.toLowerCase().trim(),cat=S.searchCat;
   const books=booksArr().filter(b=>(!q||(b.title+b.author).toLowerCase().includes(q))&&(!cat||b.cat===cat));
@@ -775,7 +714,6 @@ function renderSearch(){
     </table></div>`:`<div class="card"><div class="empty">উপরে লিখুন বা বিভাগ বেছে নিন...</div></div>`}`;
 }
 
-// ── SETTINGS ──
 function renderSettings(){
   const books=booksArr(),members=membersArr(),borrows=borrowsArr();
   return`
@@ -807,13 +745,10 @@ function renderSettings(){
     </div>`;
 }
 
-
-// ── COMPLAINTS ──
 function renderComplaints(){
   const isAdmin=S.role==='admin';
   const list=Object.entries(S.complaints).map(([id,v])=>({id,...v})).reverse();
   const unread=list.filter(c=>!c.read).length;
-
   if(!isAdmin){
     return`<div class="card">
       <div class="card-title">📢 অভিযোগ / পরামর্শ পাঠান</div>
@@ -825,8 +760,6 @@ function renderComplaints(){
       <p style="font-size:13px;color:var(--muted);text-align:center">🔒 আপনার পরিচয় সম্পূর্ণ গোপন থাকবে।<br>অ্যাডমিন শুধু বার্তাটি দেখতে পাবেন।</p>
     </div>`;
   }
-
-  // Admin view
   return`<div class="card">
     <div class="card-title">📢 অভিযোগ / পরামর্শ <span class="badge bg-red">${unread} নতুন</span></div>
     ${list.length?list.map(c=>`
@@ -843,7 +776,6 @@ function renderComplaints(){
   </div>`;
 }
 
-// ── MODAL ──
 function renderModal(){
   let content='';
   if(S.modal==='book'){
