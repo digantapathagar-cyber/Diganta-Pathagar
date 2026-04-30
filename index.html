@@ -62,12 +62,10 @@
   --shadow:0 2px 16px rgba(0,0,0,0.08);
   --shadow2:0 8px 40px rgba(0,0,0,0.13);
 }
+html{overscroll-behavior:none;}
 body{font-family:'Hind Siliguri',sans-serif;background:var(--cream);color:var(--text);min-height:100vh;font-size:15px;overscroll-behavior:none;}
 
-/* Prevent pull-to-refresh */
-html{overscroll-behavior:none;}
-
-.sync-dot{width:8px;height:8px;border-radius:50%;background:#888;display:inline-block;margin-left:6px;transition:.3s;}
+.sync-dot{width:8px;height:8px;border-radius:50%;background:#888;display:inline-block;margin-left:4px;transition:.3s;}
 .sync-dot.live{background:#2ecc71;box-shadow:0 0 6px #2ecc71;}
 
 .toast-wrap{position:fixed;top:24px;right:16px;z-index:9999;display:flex;flex-direction:column;gap:8px;}
@@ -80,51 +78,51 @@ html{overscroll-behavior:none;}
 .fb-loading p{color:var(--gold3);font-size:14px;}
 @keyframes spin{to{transform:rotate(360deg)}}
 
+/* ── HEADER ── */
 .header{background:var(--ink2);border-bottom:1px solid rgba(201,168,76,.15);position:sticky;top:0;z-index:80;}
-.h-top{max-width:1120px;margin:0 auto;padding:14px 24px;display:flex;align-items:center;justify-content:space-between;}
-.h-brand{display:flex;align-items:center;gap:12px;cursor:pointer;user-select:none;}
-.h-logo{width:38px;height:38px;background:rgba(201,168,76,.12);border:1px solid rgba(201,168,76,.3);border-radius:10px;display:flex;align-items:center;justify-content:center;transition:.15s;}
-.h-logo svg{width:24px;height:24px;}
-.h-name{font-family:'Libre Baskerville',serif;font-size:17px;color:var(--gold3);}
-.h-actions{display:flex;align-items:center;gap:8px;flex-wrap:wrap;}
-.role-pill{font-size:11px;padding:5px 12px;border-radius:20px;border:1px solid rgba(201,168,76,.3);color:var(--gold3);background:rgba(201,168,76,.08);display:flex;align-items:center;gap:4px;}
-.btn-hdr{border-radius:8px;padding:5px 14px;font-size:12px;cursor:pointer;font-family:inherit;transition:.15s;}
-.btn-hdr-red{background:rgba(176,48,48,.15);border:1px solid rgba(176,48,48,.3);color:#e07070;}
-.btn-hdr-gold{background:rgba(201,168,76,.15);border:1px solid rgba(201,168,76,.3);color:var(--gold3);}
+.h-top{max-width:1120px;margin:0 auto;padding:12px 20px;display:flex;align-items:center;justify-content:space-between;}
+.h-brand{display:flex;align-items:center;gap:10px;cursor:pointer;user-select:none;}
+.h-logo{width:36px;height:36px;background:rgba(201,168,76,.12);border:1px solid rgba(201,168,76,.3);border-radius:10px;display:flex;align-items:center;justify-content:center;transition:.15s;}
+.h-logo svg{width:22px;height:22px;}
+.h-name{font-family:'Libre Baskerville',serif;font-size:16px;color:var(--gold3);}
+.h-right{display:flex;align-items:center;gap:8px;}
 
-/* Professional Login Button */
+/* User avatar in header — click goes to My List */
+.h-avatar-btn{background:none;border:none;cursor:pointer;padding:2px;border-radius:50%;transition:.15s;}
+.h-avatar-btn img,.h-avatar-btn .av-ph{
+  width:34px;height:34px;border-radius:50%;border:2px solid rgba(201,168,76,.4);
+  object-fit:cover;display:flex;align-items:center;justify-content:center;
+  background:rgba(201,168,76,.15);color:var(--gold3);font-size:13px;font-weight:700;
+}
+.h-avatar-btn:hover img,.h-avatar-btn:hover .av-ph{border-color:var(--gold);}
+
+/* Login button */
 .btn-login-pro{
-  display:inline-flex;align-items:center;gap:8px;
-  padding:8px 18px;border-radius:10px;
+  display:inline-flex;align-items:center;gap:7px;
+  padding:7px 16px;border-radius:9px;
   background:linear-gradient(135deg,var(--gold),var(--gold2));
   color:var(--ink2);font-family:'Hind Siliguri',sans-serif;
   font-size:13px;font-weight:700;cursor:pointer;
   border:none;transition:.2s;box-shadow:0 2px 10px rgba(201,168,76,.3);
-  letter-spacing:.2px;
 }
-.btn-login-pro:hover{background:linear-gradient(135deg,var(--gold3),var(--gold));transform:translateY(-1px);box-shadow:0 4px 16px rgba(201,168,76,.4);}
-.btn-login-pro svg{width:16px;height:16px;}
+.btn-login-pro:hover{background:linear-gradient(135deg,var(--gold3),var(--gold));transform:translateY(-1px);}
+.btn-login-pro svg{width:15px;height:15px;}
 
+.h-logo.tapped{background:rgba(201,168,76,.35) !important;}
+
+/* NAV */
 .h-nav{border-top:1px solid rgba(255,255,255,.05);}
-.h-nav-inner{max-width:1120px;margin:0 auto;padding:0 24px;display:flex;overflow-x:auto;}
-.nav-btn{background:none;border:none;cursor:pointer;font-family:'Hind Siliguri',sans-serif;font-size:14px;color:rgba(255,255,255,.45);padding:12px 18px;border-bottom:2.5px solid transparent;white-space:nowrap;transition:.15s;}
+.h-nav-inner{max-width:1120px;margin:0 auto;padding:0 20px;display:flex;overflow-x:auto;scrollbar-width:none;}
+.h-nav-inner::-webkit-scrollbar{display:none;}
+.nav-btn{background:none;border:none;cursor:pointer;font-family:'Hind Siliguri',sans-serif;font-size:14px;color:rgba(255,255,255,.45);padding:11px 16px;border-bottom:2.5px solid transparent;white-space:nowrap;transition:.15s;}
 .nav-btn:hover{color:rgba(255,255,255,.75);}.nav-btn.on{color:var(--gold3);border-bottom-color:var(--gold);}
 
-/* Social Links Bar */
-.social-bar{background:rgba(0,0,0,.2);border-bottom:1px solid rgba(201,168,76,.08);}
-.social-bar-inner{max-width:1120px;margin:0 auto;padding:0 24px;display:flex;align-items:center;gap:4px;overflow-x:auto;}
-.social-link{display:inline-flex;align-items:center;gap:6px;padding:7px 14px;font-size:12px;color:rgba(255,255,255,.5);text-decoration:none;white-space:nowrap;transition:.15s;border-right:1px solid rgba(255,255,255,.06);}
-.social-link:hover{color:var(--gold3);}
-.social-link svg{width:14px;height:14px;}
-.social-link.yt:hover{color:#ff4444;}
-.social-link.fb:hover{color:#4488ff;}
-
-.main{max-width:1120px;margin:0 auto;padding:28px 24px;}
+.main{max-width:1120px;margin:0 auto;padding:24px 20px;}
 .stats{display:grid;grid-template-columns:repeat(auto-fit,minmax(150px,1fr));gap:14px;margin-bottom:24px;}
-.stat-card{background:#fff;border:1px solid var(--border);border-radius:14px;padding:20px 22px;display:flex;align-items:center;gap:16px;box-shadow:var(--shadow);}
-.stat-icon{width:44px;height:44px;border-radius:10px;display:flex;align-items:center;justify-content:center;font-size:20px;flex-shrink:0;}
+.stat-card{background:#fff;border:1px solid var(--border);border-radius:14px;padding:18px 20px;display:flex;align-items:center;gap:14px;box-shadow:var(--shadow);}
+.stat-icon{width:42px;height:42px;border-radius:10px;display:flex;align-items:center;justify-content:center;font-size:19px;flex-shrink:0;}
 .si-gold{background:#fdf5e0;}.si-blue{background:var(--blue-bg);}.si-green{background:var(--green-bg);}.si-red{background:var(--red-bg);}
-.stat-val{font-size:26px;font-weight:700;color:var(--text);line-height:1;}
+.stat-val{font-size:24px;font-weight:700;color:var(--text);line-height:1;}
 .stat-lbl{font-size:12px;color:var(--muted);margin-top:3px;}
 
 .card{background:#fff;border:1px solid var(--border);border-radius:14px;padding:20px;margin-bottom:18px;box-shadow:var(--shadow);}
@@ -185,8 +183,6 @@ html{overscroll-behavior:none;}
 .offline-bar{background:#c0392b;color:#fff;text-align:center;padding:7px;font-size:13px;display:none;}
 .offline-bar.show{display:block;}
 
-.h-logo.tapped{background:rgba(201,168,76,.35) !important;}
-
 /* Book Grid & Cards */
 .book-grid{display:grid;grid-template-columns:repeat(auto-fill,minmax(175px,1fr));gap:16px;margin-bottom:18px;}
 .book-card{background:#fff;border:1px solid var(--border);border-radius:14px;padding:16px;box-shadow:var(--shadow);cursor:pointer;transition:.15s;}
@@ -212,12 +208,7 @@ html{overscroll-behavior:none;}
 .rating-bar{display:flex;align-items:center;gap:6px;}
 .rating-count{font-size:12px;color:var(--muted);}
 
-/* User Avatar */
-.user-avatar{width:34px;height:34px;border-radius:50%;border:2px solid rgba(201,168,76,.4);object-fit:cover;cursor:pointer;transition:.15s;}
-.user-avatar:hover{border-color:var(--gold);}
-.user-avatar-placeholder{width:34px;height:34px;border-radius:50%;background:rgba(201,168,76,.15);border:2px solid rgba(201,168,76,.4);display:flex;align-items:center;justify-content:center;color:var(--gold3);font-size:14px;font-weight:700;}
-
-/* Profile Card in MyList */
+/* Profile Card */
 .profile-card{background:linear-gradient(135deg,var(--ink2),var(--ink3));border-radius:16px;padding:24px;color:#fff;margin-bottom:18px;position:relative;overflow:hidden;}
 .profile-card::before{content:'';position:absolute;top:-40px;right:-40px;width:130px;height:130px;border-radius:50%;background:rgba(201,168,76,.08);border:1px solid rgba(201,168,76,.15);}
 .profile-avatar{width:72px;height:72px;border-radius:50%;border:3px solid rgba(201,168,76,.5);object-fit:cover;margin-bottom:12px;}
@@ -226,13 +217,13 @@ html{overscroll-behavior:none;}
 .profile-email{font-size:13px;color:rgba(255,255,255,.6);margin-bottom:4px;}
 .profile-role{display:inline-block;padding:3px 12px;border-radius:20px;font-size:11px;font-weight:600;background:rgba(201,168,76,.2);color:var(--gold3);border:1px solid rgba(201,168,76,.3);}
 .profile-actions{display:flex;gap:8px;margin-top:16px;flex-wrap:wrap;}
-.btn-profile-logout{background:rgba(176,48,48,.2);border:1px solid rgba(176,48,48,.4);color:#ff8080;border-radius:8px;padding:7px 16px;font-size:13px;font-weight:600;cursor:pointer;font-family:'Hind Siliguri',sans-serif;transition:.15s;}
+.btn-profile-action{border-radius:8px;padding:7px 16px;font-size:13px;font-weight:600;cursor:pointer;font-family:'Hind Siliguri',sans-serif;transition:.15s;border:1px solid;}
+.btn-profile-logout{background:rgba(176,48,48,.2);border-color:rgba(176,48,48,.4);color:#ff8080;}
 .btn-profile-logout:hover{background:rgba(176,48,48,.35);}
+.btn-profile-admin-exit{background:rgba(201,168,76,.15);border-color:rgba(201,168,76,.3);color:var(--gold3);}
+.btn-profile-admin-exit:hover{background:rgba(201,168,76,.25);}
 
-/* Admin Users Table */
-.admin-table-card{background:#fff;border:1px solid var(--border);border-radius:14px;padding:20px;margin-bottom:18px;box-shadow:var(--shadow);}
-
-/* Logged-in users section */
+/* Settings logged-in users */
 .logged-user-item{display:flex;align-items:center;gap:12px;padding:12px;border-radius:10px;background:var(--cream);border:1px solid var(--border);margin-bottom:8px;}
 .logged-user-av{width:40px;height:40px;border-radius:50%;object-fit:cover;border:2px solid var(--gold);}
 .logged-user-av-p{width:40px;height:40px;border-radius:50%;background:var(--ink2);display:flex;align-items:center;justify-content:center;color:var(--gold3);font-size:14px;font-weight:700;border:2px solid var(--gold);}
@@ -245,23 +236,14 @@ html{overscroll-behavior:none;}
 
 <script>
 // ── CONFIG ──
-// এখানে অনুমোদিত Admin ইমেইল গুলো যোগ করুন
 const ADMIN_EMAILS = [
-  "your-admin@gmail.com",       // ← এখানে আপনার admin email দিন
-  "second-admin@gmail.com",     // ← দ্বিতীয় admin (না থাকলে মুছুন)
+  "your-admin@gmail.com",
+  "second-admin@gmail.com",
 ];
-
-// সোশ্যাল লিংক — আপনার লিংক দিয়ে পরিবর্তন করুন
-const SOCIAL_LINKS = {
-  facebook: "https://facebook.com/your-page",   // ← Facebook পেইজ লিংক
-  youtube:  "https://youtube.com/@your-channel", // ← YouTube চ্যানেল লিংক
-};
 
 const CATS=["উপন্যাস","ছোটগল্প","কবিতা","নাটক","সায়েন্স ফিকশন","জীবনী","ইতিহাস","ধর্মীয়","প্রবন্ধ","শিশুসাহিত্য","বিজ্ঞান","অন্যান্য"];
 const LOGO_SVG=`<svg viewBox="0 0 36 36" fill="none" xmlns="http://www.w3.org/2000/svg"><rect x="3" y="26" width="30" height="4" rx="2" fill="#c9a84c"/><path d="M18 10 Q11 6 5 8 L5 22 Q11 20 18 24 Q25 20 31 22 L31 8 Q25 6 18 10Z" stroke="#c9a84c" stroke-width="1.4" fill="rgba(201,168,76,0.08)"/><line x1="18" y1="10" x2="18" y2="24" stroke="#c9a84c" stroke-width="1"/><circle cx="18" cy="8" r="2" fill="#c9a84c" opacity=".5"/></svg>`;
-const GOOGLE_SVG=`<svg width="18" height="18" viewBox="0 0 48 48"><path fill="#EA4335" d="M24 9.5c3.54 0 6.71 1.22 9.21 3.6l6.85-6.85C35.9 2.38 30.47 0 24 0 14.62 0 6.51 5.38 2.56 13.22l7.98 6.19C12.43 13.72 17.74 9.5 24 9.5z"/><path fill="#4285F4" d="M46.98 24.55c0-1.57-.15-3.09-.38-4.55H24v9.02h12.94c-.58 2.96-2.26 5.48-4.78 7.18l7.73 6c4.51-4.18 7.09-10.36 7.09-17.65z"/><path fill="#FBBC05" d="M10.53 28.59c-.48-1.45-.76-2.99-.76-4.59s.27-3.14.76-4.59l-7.98-6.19C.92 16.46 0 20.12 0 24c0 3.88.92 7.54 2.56 10.78l7.97-6.19z"/><path fill="#34A853" d="M24 48c6.48 0 11.93-2.13 15.89-5.81l-7.73-6c-2.18 1.48-4.97 2.36-8.16 2.36-6.26 0-11.57-4.22-13.47-9.91l-7.98 6.19C6.51 42.62 14.62 48 24 48z"/></svg>`;
-const YT_SVG=`<svg viewBox="0 0 24 24" fill="currentColor"><path d="M23.5 6.2a3 3 0 0 0-2.1-2.1C19.5 3.5 12 3.5 12 3.5s-7.5 0-9.4.5A3 3 0 0 0 .5 6.2C0 8.1 0 12 0 12s0 3.9.5 5.8a3 3 0 0 0 2.1 2.1c1.9.5 9.4.5 9.4.5s7.5 0 9.4-.5a3 3 0 0 0 2.1-2.1C24 15.9 24 12 24 12s0-3.9-.5-5.8zM9.7 15.5V8.5l6.3 3.5-6.3 3.5z"/></svg>`;
-const FB_SVG=`<svg viewBox="0 0 24 24" fill="currentColor"><path d="M24 12.07C24 5.41 18.63 0 12 0S0 5.41 0 12.07C0 18.1 4.39 23.1 10.13 24v-8.44H7.08v-3.49h3.04V9.41c0-3.02 1.8-4.7 4.54-4.7 1.31 0 2.68.24 2.68.24v2.97h-1.5c-1.49 0-1.95.93-1.95 1.88v2.27h3.32l-.53 3.49h-2.79V24C19.61 23.1 24 18.1 24 12.07z"/></svg>`;
+const GOOGLE_SVG=`<svg width="18" height="18" viewBox="0 0 48 48"><path fill="#EA4335" d="M24 9.5c3.54 0 6.71 1.22 9.21 3.6l6.85-6.85C35.9 2.38 30.47 0 24 0S6.51 5.38 2.56 13.22l7.98 6.19C12.43 13.72 17.74 9.5 24 9.5z"/><path fill="#4285F4" d="M46.98 24.55c0-1.57-.15-3.09-.38-4.55H24v9.02h12.94c-.58 2.96-2.26 5.48-4.78 7.18l7.73 6c4.51-4.18 7.09-10.36 7.09-17.65z"/><path fill="#FBBC05" d="M10.53 28.59c-.48-1.45-.76-2.99-.76-4.59s.27-3.14.76-4.59l-7.98-6.19C.92 16.46 0 20.12 0 24c0 3.88.92 7.54 2.56 10.78l7.97-6.19z"/><path fill="#34A853" d="M24 48c6.48 0 11.93-2.13 15.89-5.81l-7.73-6c-2.18 1.48-4.97 2.36-8.16 2.36-6.26 0-11.57-4.22-13.47-9.91l-7.98 6.19C6.51 42.62 14.62 48 24 48z"/></svg>`;
 
 let S={
   screen:'loading',role:'guest',tab:0,user:null,
@@ -277,6 +259,18 @@ let S={
   selectedBook:null,newRating:0,newReview:'',newComment:'',
   myReadlist:{},myFavs:{}
 };
+
+// Tab index helpers — recomputed each render
+function getTabList(){
+  const isAdmin=S.role==='admin';
+  const isUser=S.role==='user'||isAdmin;
+  const tabs=['ড্যাশবোর্ড','বইয়ের তালিকা','অনুসন্ধান'];
+  if(isUser)tabs.push('আমার তালিকা');
+  if(isAdmin){tabs.push('সদস্যবৃন্দ');tabs.push('বই ধার');tabs.push('অভিযোগ');tabs.push('সেটিংস');}
+  else tabs.push('অভিযোগ');
+  return tabs;
+}
+function tabIndex(name){return getTabList().indexOf(name);}
 
 function fb(){return window._fb;}
 function fbPush(p,v){const{db,ref,push}=fb();return push(ref(db,p),v);}
@@ -311,13 +305,11 @@ function initListeners(){
   onAuthStateChanged(auth,user=>{
     if(user){
       S.user=user;
-      // Auto admin by email
       if(isAdminEmail(user.email)){
         S.role='admin';
       } else {
         if(S.role!=='admin')S.role='user';
       }
-      // Track online
       const uid=safeKey(user.uid);
       fbSet('onlineUsers/'+uid,{
         name:user.displayName||'অজানা',
@@ -335,6 +327,7 @@ function initListeners(){
       }
       S.user=null;
       if(S.role!=='admin')S.role='guest';
+      else S.role='guest'; // password-admin also logs out fully
       S.myReadlist={};S.myFavs={};
     }
     tryRender();
@@ -382,12 +375,17 @@ async function emailLogin(){
 async function logout(){
   if(S.user){const uid=safeKey(S.user.uid);fbRemove('onlineUsers/'+uid);}
   const{auth,signOut}=window._auth;
-  await signOut(auth);S.role='guest';S.tab=0;toast('লগআউট হয়েছে');render();
+  await signOut(auth);
+  S.role='guest';
+  // Go back to dashboard tab
+  S.tab=0;
+  S.selectedBook=null;
+  toast('লগআউট হয়েছে');
+  render();
 }
 
-/* ── ADMIN ── */
+/* ── ADMIN (password) ── */
 function handleLogoTap(){
-  // Only show password login if not already logged in as email admin
   if(S.role==='admin'&&S.user&&isAdminEmail(S.user.email))return;
   S.logoTapCount++;
   const logo=document.querySelector('.h-logo');
@@ -405,10 +403,15 @@ function tryAdminLogin(){
   if(S.passes.includes(pw)){S.role='admin';S.showAdminLogin=false;S.adminPwInput='';toast('অ্যাডমিন মোড ✓');render();}
   else toast('ভুল পাসওয়ার্ড!','err');
 }
-function adminLogout(){
-  // If admin by email, just log out entirely
+// Called from Settings → "Admin মোড বন্ধ"
+function adminExitMode(){
+  // If email-based admin → full logout
   if(S.user&&isAdminEmail(S.user.email)){logout();return;}
-  S.role=S.user?'user':'guest';S.tab=0;toast('অ্যাডমিন মোড বন্ধ');render();
+  // Password-admin → just drop role, stay as guest/user
+  S.role=S.user?'user':'guest';
+  S.tab=0;
+  toast('অ্যাডমিন মোড বন্ধ');
+  render();
 }
 
 /* ── BOOKS ── */
@@ -568,21 +571,31 @@ function starsHTML(rating,interactive){
   }
   return h+'</div>';
 }
-function avatarHTML(photoURL,name,cls='user-avatar',size=34){
-  if(photoURL){
-    return'<img src="'+esc(photoURL)+'" class="'+cls+'" width="'+size+'" height="'+size+'" referrerpolicy="no-referrer" onerror="this.style.display=\'none\'" alt="'+esc(name)+'">';
-  }
-  const initials=(name||'?').charAt(0).toUpperCase();
-  return'<div class="user-avatar-placeholder" style="width:'+size+'px;height:'+size+'px">'+initials+'</div>';
-}
 
 /* ── RENDER ── */
+// Preserve scroll position across re-renders
+let _scrollY=0;
 function render(){
+  _scrollY=window.scrollY;
   document.getElementById('app').innerHTML=
     S.screen==='loading'
       ?'<div class="fb-loading"><div class="spinner"></div><p>সংযোগ হচ্ছে...</p></div>'
       :renderApp();
   attachEvents();
+  // Restore scroll only for same-tab re-renders; not after tab switch
+  if(!_tabSwitched){
+    requestAnimationFrame(()=>window.scrollTo(0,_scrollY));
+  }
+  _tabSwitched=false;
+}
+let _tabSwitched=false;
+function switchTab(idx){
+  _tabSwitched=true;
+  S.tab=idx;
+  S.selectedBook=null;
+  S.search='';
+  window.scrollTo(0,0);
+  render();
 }
 
 function attachEvents(){
@@ -595,7 +608,7 @@ function attachEvents(){
     if(a==='logout')el.onclick=logout;
     if(a==='tryAdminLogin')el.onclick=tryAdminLogin;
     if(a==='closeAdminLogin')el.onclick=closeAdminLogin;
-    if(a==='adminLogout')el.onclick=adminLogout;
+    if(a==='adminExitMode')el.onclick=adminExitMode;
     if(a==='saveBook')el.onclick=saveBook;
     if(a==='saveMember')el.onclick=saveMember;
     if(a==='issueBorrow')el.onclick=issueBorrow;
@@ -608,7 +621,8 @@ function attachEvents(){
     if(a==='openBook'){el.onclick=()=>{S.modal='book';S.form={};render();};}
     if(a==='openMember'){el.onclick=()=>{S.modal='member';S.form={};render();};}
     if(a==='openLogin'){el.onclick=()=>{S.modal='auth';render();};}
-    if(a.startsWith('tab:')){el.onclick=()=>{S.tab=parseInt(a.split(':')[1]);S.selectedBook=null;render();};}
+    if(a==='goMyList'){el.onclick=()=>switchTab(tabIndex('আমার তালিকা'));}
+    if(a.startsWith('tab:')){el.onclick=()=>switchTab(parseInt(a.split(':')[1]));}
     if(a.startsWith('return:')){el.onclick=()=>returnBorrow(a.split(':')[1]);}
     if(a.startsWith('delBook:')){el.onclick=()=>deleteBook(a.split(':')[1]);}
     if(a.startsWith('editBook:')){el.onclick=()=>editBook(a.split(':')[1]);}
@@ -617,7 +631,14 @@ function attachEvents(){
     if(a.startsWith('delPass:')){el.onclick=()=>removePass(decodeURIComponent(a.split(':')[1]));}
     if(a.startsWith('markRead:')){el.onclick=()=>markComplaintRead(a.split(':')[1]);}
     if(a.startsWith('delComplaint:')){el.onclick=()=>deleteComplaint(a.split(':')[1]);}
-    if(a.startsWith('openBookDetail:')){el.onclick=()=>{const id=a.split(':')[1];S.selectedBook={id,...S.books[id]};S.newRating=0;S.newReview='';S.newComment='';render();};}
+    if(a.startsWith('openBookDetail:')){el.onclick=()=>{
+      _tabSwitched=true;
+      const id=a.split(':')[1];
+      S.selectedBook={id,...S.books[id]};
+      S.newRating=0;S.newReview='';S.newComment='';
+      window.scrollTo(0,0);
+      render();
+    };}
     if(a.startsWith('toggleReadlist:')){el.onclick=()=>toggleReadlist(a.split(':')[1]);}
     if(a.startsWith('toggleFav:')){el.onclick=()=>toggleFav(a.split(':')[1]);}
     if(a==='authTabLogin'){el.onclick=()=>{S.authTab='login';S.authForm={};render();};}
@@ -661,38 +682,30 @@ function attachEvents(){
 function renderApp(){
   const isAdmin=S.role==='admin';
   const isUser=S.role==='user'||isAdmin;
-  const isEmailAdmin=S.user&&isAdminEmail(S.user.email);
-  const tabs=['ড্যাশবোর্ড','বইয়ের তালিকা','অনুসন্ধান'];
-  if(isUser)tabs.push('আমার তালিকা');
-  if(isAdmin){tabs.push('সদস্যবৃন্দ');tabs.push('বই ধার');tabs.push('অভিযোগ');tabs.push('সেটিংস');}
-  else tabs.push('অভিযোগ');
+  const tabs=getTabList();
 
-  // Social bar
-  const socialBar='<div class="social-bar"><div class="social-bar-inner">'
-    +'<a class="social-link fb" href="'+SOCIAL_LINKS.facebook+'" target="_blank" rel="noopener">'+FB_SVG+' Facebook পেইজ</a>'
-    +'<a class="social-link yt" href="'+SOCIAL_LINKS.youtube+'" target="_blank" rel="noopener">'+YT_SVG+' YouTube চ্যানেল</a>'
-    +'</div></div>';
-
-  // Header actions
-  let headerActions='<span class="role-pill">'+(isAdmin?'⚙ অ্যাডমিন':isUser?'':''+(isEmailAdmin?'':''))+'<span class="sync-dot '+(S.syncLive?'live':'')+'"></span></span>';
+  // Header right side — no logout here, no text labels beyond icon+dot
+  let hRight='';
   if(isUser){
-    headerActions='<span class="role-pill">'+(isAdmin?'⚙ অ্যাডমিন':'👤')+' <span class="sync-dot '+(S.syncLive?'live':'')+'"></span></span>';
-    if(S.user&&S.user.photoURL){
-      headerActions+=avatarHTML(S.user.photoURL,S.user.displayName||'');
+    // Avatar button → goes to My List tab
+    const photo=S.user?.photoURL;
+    const name=S.user?.displayName||'?';
+    let avHTML;
+    if(photo){
+      avHTML='<img src="'+esc(photo)+'" width="34" height="34" referrerpolicy="no-referrer" onerror="this.outerHTML=\'<div class=av-ph>'+name.charAt(0).toUpperCase()+'</div>\'" alt="">';
+    } else {
+      avHTML='<div class="av-ph">'+name.charAt(0).toUpperCase()+'</div>';
     }
-    if(isAdmin&&!isEmailAdmin){
-      headerActions+='<button class="btn-hdr btn-hdr-red" data-action="adminLogout">Admin বের হন</button>';
-    }
-    headerActions+='<button class="btn-hdr btn-hdr-red" data-action="logout">লগআউট</button>';
+    hRight='<button class="h-avatar-btn" data-action="goMyList" title="আমার তালিকা">'+avHTML+'</button>';
+    hRight+='<span class="sync-dot '+(S.syncLive?'live':'')+'"></span>';
   } else {
-    headerActions='<span class="role-pill">📖 অতিথি <span class="sync-dot '+(S.syncLive?'live':'')+'"></span></span>';
-    headerActions+='<button class="btn-login-pro" data-action="openLogin"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><path d="M15 3h4a2 2 0 0 1 2 2v14a2 2 0 0 1-2 2h-4M10 17l5-5-5-5M15 12H3"/></svg>লগইন করুন</button>';
+    hRight='<button class="btn-login-pro" data-action="openLogin"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><path d="M15 3h4a2 2 0 0 1 2 2v14a2 2 0 0 1-2 2h-4M10 17l5-5-5-5M15 12H3"/></svg>লগইন</button>';
+    hRight+='<span class="sync-dot '+(S.syncLive?'live':'')+'"></span>';
   }
 
   return '<div class="header">'
-    +socialBar
     +'<div class="h-top"><div class="h-brand" title="৩ বার ট্যাপ (Admin)"><div class="h-logo">'+LOGO_SVG+'</div><div class="h-name">দিগন্ত পাঠাগার</div></div>'
-    +'<div class="h-actions">'+headerActions+'</div></div>'
+    +'<div class="h-right">'+hRight+'</div></div>'
     +'<div class="h-nav"><div class="h-nav-inner">'+tabs.map((t,i)=>'<button class="nav-btn '+(S.tab===i?'on':'')+'" data-action="tab:'+i+'">'+t+'</button>').join('')+'</div></div></div>'
     +'<div class="main">'+(S.selectedBook?renderBookDetail():renderTab())+'</div>'
     +(S.modal?renderModal():'')+(S.showAdminLogin?renderAdminOverlay():'');
@@ -700,14 +713,16 @@ function renderApp(){
 
 function renderTab(){
   const isAdmin=S.role==='admin';const isUser=S.role==='user'||isAdmin;
-  if(S.tab===0)return renderDash();
-  if(S.tab===1)return renderBooks();
-  if(S.tab===2)return renderSearch();
-  if(isUser&&S.tab===3)return renderMyList();
-  if(isAdmin&&S.tab===4)return renderMembers();
-  if(isAdmin&&S.tab===5)return renderBorrow();
-  if(S.tab===(isAdmin?6:isUser?4:3))return renderComplaints();
-  if(isAdmin&&S.tab===7)return renderSettings();
+  const tabs=getTabList();
+  const name=tabs[S.tab]||'';
+  if(name==='ড্যাশবোর্ড')return renderDash();
+  if(name==='বইয়ের তালিকা')return renderBooks();
+  if(name==='অনুসন্ধান')return renderSearch();
+  if(name==='আমার তালিকা')return renderMyList();
+  if(name==='সদস্যবৃন্দ')return renderMembers();
+  if(name==='বই ধার')return renderBorrow();
+  if(name==='অভিযোগ')return renderComplaints();
+  if(name==='সেটিংস')return renderSettings();
   return'';
 }
 
@@ -769,20 +784,21 @@ function renderMyList(){
   if(!S.user)return'<div class="card"><div class="empty">লগইন করুন</div></div>';
   const isAdmin=S.role==='admin';
   const isEmailAdmin=S.user&&isAdminEmail(S.user.email);
+  const isPwAdmin=isAdmin&&!isEmailAdmin;
   const readBooks=booksArr().filter(b=>S.myReadlist[b.id]);
   const favBooks=booksArr().filter(b=>S.myFavs[b.id]);
 
-  // Profile card with avatar, logout etc.
   const av=S.user.photoURL?
     '<img src="'+esc(S.user.photoURL)+'" class="profile-avatar" referrerpolicy="no-referrer" onerror="this.outerHTML=\'<div class=profile-avatar-placeholder>'+((S.user.displayName||'?').charAt(0).toUpperCase())+'</div>\'">':
     '<div class="profile-avatar-placeholder">'+(S.user.displayName||'?').charAt(0).toUpperCase()+'</div>';
+
   const profileCard='<div class="profile-card">'+av
     +'<div class="profile-name">'+esc(S.user.displayName||'')+'</div>'
     +'<div class="profile-email">'+esc(S.user.email||'')+'</div>'
     +'<div style="margin-top:6px"><span class="profile-role">'+(isAdmin?'⚙ অ্যাডমিন':'👤 সাধারণ সদস্য')+'</span></div>'
     +'<div class="profile-actions">'
-    +'<button class="btn-profile-logout" data-action="logout">🚪 লগআউট</button>'
-    +(isAdmin&&!isEmailAdmin?'<button class="btn-profile-logout" data-action="adminLogout" style="background:rgba(201,168,76,.15);border-color:rgba(201,168,76,.3);color:var(--gold3)">Admin মোড বন্ধ</button>':'')
+    +'<button class="btn-profile-action btn-profile-logout" data-action="logout">🚪 লগআউট</button>'
+    +(isPwAdmin?'<button class="btn-profile-action btn-profile-admin-exit" data-action="adminExitMode">Admin মোড বন্ধ</button>':'')
     +'</div></div>';
 
   return profileCard
@@ -818,11 +834,12 @@ function renderComplaints(){
 function renderSettings(){
   const books=booksArr(),members=membersArr(),borrows=borrowsArr();
   const onlineList=Object.values(S.onlineUsers||{});
+  const isEmailAdmin=S.user&&isAdminEmail(S.user.email);
+  const isPwAdmin=S.role==='admin'&&!isEmailAdmin;
 
-  // Online/logged-in users section
   const onlineSec='<div class="card"><div class="card-title">🟢 লগইনকৃত ব্যবহারকারী <span class="badge bg-green">'+onlineList.length+'</span></div>'
     +(onlineList.length?onlineList.map(u=>'<div class="logged-user-item">'
-      +(u.photo?'<img src="'+esc(u.photo)+'" class="logged-user-av" referrerpolicy="no-referrer" onerror="this.outerHTML=\'<div class=logged-user-av-p>\'+(u.name||\'?\').charAt(0).toUpperCase()+\'</div>\'">'
+      +(u.photo?'<img src="'+esc(u.photo)+'" class="logged-user-av" referrerpolicy="no-referrer" onerror="this.style.display=\'none\'">'
         :'<div class="logged-user-av-p">'+(u.name||'?').charAt(0).toUpperCase()+'</div>')
       +'<div style="flex:1"><div style="font-weight:600;font-size:14px">'+esc(u.name||'অজানা')+'</div><div style="font-size:12px;color:var(--muted)">'+esc(u.email||'')+'</div></div>'
       +(u.isAdmin?'<span class="badge bg-amber">অ্যাডমিন</span>':'<span class="badge bg-blue">সদস্য</span>')
@@ -830,12 +847,16 @@ function renderSettings(){
     :'<div class="empty">কেউ লগইন নেই</div>')
     +'</div>';
 
-  // Admin emails list
   const adminEmailsSec='<div class="card"><div class="card-title">✉️ অনুমোদিত Admin ইমেইল</div>'
     +ADMIN_EMAILS.map(e=>'<div style="padding:10px 14px;border-radius:8px;background:var(--cream);border:1px solid var(--border);margin-bottom:6px;font-family:monospace;font-size:13px;color:var(--ink2)">'+esc(e)+'</div>').join('')
     +'<div style="font-size:12px;color:var(--muted);margin-top:10px">💡 ইমেইল পরিবর্তন করতে index.html এ ADMIN_EMAILS তালিকা সম্পাদনা করুন।</div></div>';
 
-  return onlineSec+adminEmailsSec
+  // "Admin মোড বন্ধ" only for password-admin (email-admins have logout in My List)
+  const adminExitBtn=isPwAdmin
+    ?'<div class="card"><div class="card-title">অ্যাডমিন</div><button class="btn btn-ghost" data-action="adminExitMode" style="color:var(--red);border-color:var(--red)">Admin মোড বন্ধ করুন</button></div>'
+    :'';
+
+  return onlineSec+adminEmailsSec+adminExitBtn
     +'<div class="card"><div class="card-title">পাসওয়ার্ড ব্যবস্থাপনা</div><table class="tbl"><thead><tr><th>#</th><th>পাসওয়ার্ড</th><th></th></tr></thead><tbody>'+S.passes.map((p,i)=>'<tr><td style="color:var(--muted)">'+(i+1)+'</td><td><span style="font-family:monospace">'+'•'.repeat(Math.min(p.length,12))+'</span></td><td><button class="btn btn-ghost btn-sm" data-action="delPass:'+encodeURIComponent(p)+'">মুছুন</button></td></tr>').join('')+'</tbody></table><div style="display:flex;gap:10px;margin-top:16px"><input id="fNewPass" class="inp" style="margin-bottom:0;flex:1" type="password" placeholder="নতুন পাসওয়ার্ড" value="'+esc(S.form.newPass||'')+'"><button class="btn btn-dark" data-action="addPass">যোগ করুন</button></div></div>'
     +'<div class="card"><div class="card-title">পরিসংখ্যান</div><table class="tbl"><tbody><tr><td>মোট বই</td><td style="font-weight:700">'+books.length+'</td></tr><tr><td>মোট কপি</td><td style="font-weight:700">'+books.reduce((a,b)=>a+b.total,0)+'</td></tr><tr><td>মোট সদস্য</td><td style="font-weight:700">'+members.length+'</td></tr><tr><td>সর্বমোট ধার</td><td style="font-weight:700">'+borrows.length+' বার</td></tr><tr><td>এখন ধারে</td><td style="font-weight:700">'+borrows.filter(b=>!b.ret).length+'</td></tr></tbody></table></div>';
 }
@@ -865,8 +886,9 @@ window.addEventListener('offline',()=>document.getElementById('offlineBar').clas
 let touchStartY=0;
 document.addEventListener('touchstart',e=>{touchStartY=e.touches[0].clientY;},{passive:true});
 document.addEventListener('touchmove',e=>{
-  const dy=e.touches[0].clientY-touchStartY;
-  if(dy>0&&window.scrollY===0){e.preventDefault();}
+  if(e.touches[0].clientY>touchStartY&&window.scrollY===0){
+    e.preventDefault();
+  }
 },{passive:false});
 
 if(window._fbReady)initListeners();
