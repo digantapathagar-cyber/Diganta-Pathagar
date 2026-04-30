@@ -1,8 +1,8 @@
 const CACHE_NAME = 'diganta-pathagar-v1';
 const ASSETS = [
-  '/Diganta-pathagar/',
-  '/Diganta-pathagar/index.html',
-  '/Diganta-pathagar/manifest.json',
+  '/Diganta-Pathagar/',
+  '/Diganta-Pathagar/index.html',
+  '/Diganta-Pathagar/manifest.json',
   'https://fonts.googleapis.com/css2?family=Hind+Siliguri:wght@300;400;500;600;700&family=Libre+Baskerville:ital,wght@0,400;0,700;1,400&display=swap'
 ];
 
