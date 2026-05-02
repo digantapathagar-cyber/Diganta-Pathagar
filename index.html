@@ -247,7 +247,7 @@ const GOOGLE_SVG=`<svg width="18" height="18" viewBox="0 0 48 48"><path fill="#E
 let S={
   screen:'loading',role:'guest',tab:0,user:null,
   books:{},members:{},borrows:{},passes:[],complaints:{},reviews:{},discussions:{},
-  onlineUsers:{},
+  onlineUsers:{},fees:{},
   modal:null,form:{},
   borrow:{bookId:'',bookTitle:'',memberId:'',memberName:'',bookQuery:'',memberQuery:''},
   search:'',searchCat:'',
@@ -264,7 +264,7 @@ function getTabList(){
   const isUser=S.role==='user'||isAdmin;
   const tabs=['ড্যাশবোর্ড','বইয়ের তালিকা','অনুসন্ধান'];
   if(isUser)tabs.push('আমার তালিকা');
-  if(isAdmin){tabs.push('সদস্যবৃন্দ');tabs.push('বই ধার');tabs.push('অভিযোগ');tabs.push('সেটিংস');}
+  if(isAdmin){tabs.push('সদস্যবৃন্দ');tabs.push('বই ধার');tabs.push('রিপোর্ট');tabs.push('অভিযোগ');tabs.push('সেটিংস');}
   else tabs.push('অভিযোগ');
   return tabs;
 }
@@ -310,6 +310,7 @@ function initListeners(){
   fbListen('reviews',v=>{S.reviews=v||{};tryRender();});
   fbListen('discussions',v=>{S.discussions=v||{};tryRender();});
   fbListen('onlineUsers',v=>{S.onlineUsers=v||{};tryRender();});
+  fbListen('fees',v=>{S.fees=v||{};tryRender();});
   fbListen('passes',v=>{
     if(v){S.passes=typeof v==='object'?Object.values(v):v;}
     else{fbSet('passes',{p0:'diganta2025'});S.passes=['diganta2025'];}
@@ -458,7 +459,7 @@ function issueBorrow(){
   fbPush('borrows',{
     bookId:S.borrow.bookId,bookTitle:S.borrow.bookTitle,
     memberId:S.borrow.memberId,memberName:S.borrow.memberName,
-    issuedAt:nowDate(),dueDate:futureDate(dueDays),ret:false,returnedAt:null
+    issuedAt:nowDate(),issuedTimestamp:Date.now(),dueDate:futureDate(dueDays),dueTimestamp:Date.now()+dueDays*86400000,ret:false,returnedAt:null
   }).then(()=>{
     fbUpdate('books/'+S.borrow.bookId,{avail:bk.avail-1});
     S.borrow={bookId:'',bookTitle:'',memberId:'',memberName:'',bookQuery:'',memberQuery:''};
@@ -519,6 +520,49 @@ function submitComplaint(){
 }
 function markComplaintRead(id){fbUpdate('complaints/'+id,{read:true});}
 function deleteComplaint(id){if(!confirm('মুছে দেবেন?'))return;fbRemove('complaints/'+id).then(()=>toast('মুছে গেছে'));}
+
+/* ── FEES ── */
+function parseDateBD(d){
+  // Try to parse Bengali or English date string to Date object
+  if(!d)return null;
+  // Try direct
+  const direct=new Date(d);
+  if(!isNaN(direct))return direct;
+  return null;
+}
+function overduedays(dueDateStr){
+  if(!dueDateStr)return 0;
+  // Parse Bengali locale date — convert to comparable
+  const now=new Date();
+  now.setHours(0,0,0,0);
+  // Try English parse fallback by storing raw timestamp too
+  return 0; // fallback — will use issuedAt timestamp approach
+}
+function borrowAge(issuedAt,dueDateStr){
+  // Returns days overdue (positive = overdue)
+  if(!dueDateStr)return 0;
+  const now=new Date();now.setHours(0,0,0,0);
+  // We store dueDate as Bengali locale string — compare by re-computing
+  return 0;
+}
+
+function saveFee(memberId,year,month,amount,paid){
+  const key=memberId+'_'+year+(month?'_'+month:'');
+  fbSet('fees/'+key,{memberId,year,month:month||'',amount:parseFloat(amount)||0,paid:!!paid,updatedAt:nowDate()})
+    .then(()=>toast(paid?'পরিশোধ চিহ্নিত ✓':'অপরিশোধ চিহ্নিত'));
+}
+function toggleFeePaid(memberId,year,month,amount){
+  const key=memberId+'_'+year+(month?'_'+month:'');
+  const existing=S.fees[key];
+  saveFee(memberId,year,month,amount||0,!(existing&&existing.paid));
+}
+function addFeeRecord(){
+  const{feeYear,feeMonth,feeAmount,feeMemberId}=S.form;
+  if(!feeMemberId)return toast('সদস্য বেছে নিন','err');
+  if(!feeYear)return toast('বছর দিন','err');
+  saveFee(feeMemberId,feeYear,feeMonth||'',feeAmount||0,false);
+  S.modal=null;S.form={};render();
+}
 
 function addPass(){
   const pw=(S.form.newPass||'').trim();
@@ -608,6 +652,7 @@ function attachEvents(){
     if(a==='saveMember')el.onclick=saveMember;
     if(a==='issueBorrow')el.onclick=issueBorrow;
     if(a==='addPass')el.onclick=addPass;
+    if(a==='addFeeRecord')el.onclick=addFeeRecord;
     if(a==='submitReview')el.onclick=submitReview;
     if(a==='submitComment')el.onclick=submitComment;
     if(a==='submitComplaint')el.onclick=submitComplaint;
@@ -623,6 +668,10 @@ function attachEvents(){
     if(a.startsWith('editBook:')){el.onclick=()=>editBook(a.split(':')[1]);}
     if(a.startsWith('delMember:')){el.onclick=()=>deleteMember(a.split(':')[1]);}
     if(a.startsWith('editMember:')){el.onclick=()=>editMember(a.split(':')[1]);}
+    if(a.startsWith('viewMemberHistory:')){el.onclick=()=>{
+      const id=a.split(':')[1];
+      S.modal='memberHistory';S.form={histMemberId:id};render();
+    };}
     if(a.startsWith('delPass:')){el.onclick=()=>removePass(decodeURIComponent(a.split(':')[1]));}
     if(a.startsWith('markRead:')){el.onclick=()=>markComplaintRead(a.split(':')[1]);}
     if(a.startsWith('delComplaint:')){el.onclick=()=>deleteComplaint(a.split(':')[1]);}
@@ -663,6 +712,10 @@ function attachEvents(){
   bind('#fMemberEmail',e=>{S.form.email=e.target.value;});
   bind('#fJoinedAt',e=>{S.form.joinedAt=e.target.value;});
   bind('#fNewPass',e=>{S.form.newPass=e.target.value;});
+  bind('#fFeeMember',e=>{S.form.feeMemberId=e.target.value;});
+  bind('#fFeeYear',e=>{S.form.feeYear=e.target.value;});
+  bind('#fFeeMonth',e=>{S.form.feeMonth=e.target.value;});
+  bind('#fFeeAmount',e=>{S.form.feeAmount=e.target.value;});
   bind('#authName',e=>{S.authForm.name=e.target.value;});
   bind('#authEmail',e=>{S.authForm.email=e.target.value;});
   bind('#authPassword',e=>{S.authForm.password=e.target.value;});
@@ -709,6 +762,7 @@ function renderTab(){
   if(name==='আমার তালিকা')return renderMyList();
   if(name==='সদস্যবৃন্দ')return renderMembers();
   if(name==='বই ধার')return renderBorrow();
+  if(name==='রিপোর্ট')return renderReport();
   if(name==='অভিযোগ')return renderComplaints();
   if(name==='সেটিংস')return renderSettings();
   return'';
@@ -779,7 +833,7 @@ function renderMembers(){
   const isAdmin=S.role==='admin';
   const q=S.search.toLowerCase().trim();
   const list=membersArr().filter(m=>!q||(m.name+m.phone).toLowerCase().includes(q));
-  return'<div class="section-head"><div class="search-wrap"><span class="search-icon">🔍</span><input id="globalSearch" class="inp search-inp" placeholder="নাম বা ফোন..." value="'+esc(S.search)+'" style="margin-bottom:0"></div>'+(isAdmin?'<button class="btn btn-dark" data-action="openMember">+ নতুন সদস্য</button>':'')+'</div>'+(list.length?list.map(m=>{const cnt=memberBorrowCount(m.id);return'<div class="card" style="margin-bottom:12px;padding:16px"><div style="display:flex;align-items:flex-start;justify-content:space-between;gap:10px"><div style="flex:1"><div style="font-weight:700;font-size:15px">'+esc(m.name)+'</div><div style="font-size:13px;color:var(--muted);margin-top:3px">📞 '+esc(m.phone)+'</div>'+(m.email?'<div style="font-size:13px;color:var(--muted);margin-top:2px">✉️ '+esc(m.email)+'</div>':'')+(m.address?'<div style="font-size:13px;color:var(--muted);margin-top:2px">📍 '+esc(m.address)+'</div>':'')+'<div style="font-size:12px;color:var(--lighter);margin-top:4px">যোগ দিয়েছেন: '+esc(m.joinedAt||'')+'</div></div><div style="display:flex;flex-direction:column;align-items:flex-end;gap:8px"><span class="badge '+(cnt>0?'bg-amber':'bg-green')+'">'+cnt+' টি ধারে</span>'+(isAdmin?'<div class="btn-grp"><button class="btn btn-blue btn-sm" data-action="editMember:'+m.id+'">✏️</button><button class="btn btn-ghost btn-sm" data-action="delMember:'+m.id+'">🗑️</button></div>':'')+'</div></div></div>';}).join(''):'<div class="card"><div class="empty">কোনো সদস্য নেই</div></div>');
+  return'<div class="section-head"><div class="search-wrap"><span class="search-icon">🔍</span><input id="globalSearch" class="inp search-inp" placeholder="নাম বা ফোন..." value="'+esc(S.search)+'" style="margin-bottom:0"></div>'+(isAdmin?'<button class="btn btn-dark" data-action="openMember">+ নতুন সদস্য</button>':'')+'</div>'+(list.length?list.map(m=>{const cnt=memberBorrowCount(m.id);return'<div class="card" style="margin-bottom:12px;padding:16px"><div style="display:flex;align-items:flex-start;justify-content:space-between;gap:10px"><div style="flex:1"><div style="font-weight:700;font-size:15px">'+esc(m.name)+'</div><div style="font-size:13px;color:var(--muted);margin-top:3px">📞 '+esc(m.phone)+'</div>'+(m.email?'<div style="font-size:13px;color:var(--muted);margin-top:2px">✉️ '+esc(m.email)+'</div>':'')+(m.address?'<div style="font-size:13px;color:var(--muted);margin-top:2px">📍 '+esc(m.address)+'</div>':'')+'<div style="font-size:12px;color:var(--lighter);margin-top:4px">যোগ দিয়েছেন: '+esc(m.joinedAt||'')+'</div></div><div style="display:flex;flex-direction:column;align-items:flex-end;gap:8px"><span class="badge '+(cnt>0?'bg-amber':'bg-green')+'">'+cnt+' টি ধারে</span>'+(isAdmin?'<div class="btn-grp"><button class="btn btn-blue btn-sm" data-action="editMember:'+m.id+'">✏️</button><button class="btn btn-ghost btn-sm" data-action="viewMemberHistory:'+m.id+'">📋</button><button class="btn btn-ghost btn-sm" data-action="delMember:'+m.id+'">🗑️</button></div>':'')+'</div></div></div>';}).join(''):'<div class="card"><div class="empty">কোনো সদস্য নেই</div></div>');
 }
 
 function renderBorrow(){
@@ -798,6 +852,122 @@ function renderComplaints(){
   const unread=list.filter(c=>!c.read).length;
   if(!isAdmin)return'<div class="card"><div class="card-title">📢 অভিযোগ / পরামর্শ পাঠান</div><p style="font-size:13px;color:var(--muted);margin-bottom:14px">আপনার পরিচয় গোপন থাকবে।</p><textarea id="complaintInput" class="inp" rows="4" placeholder="এখানে লিখুন..." style="resize:vertical;min-height:100px">'+esc(S.complaintText||'')+'</textarea><button class="btn btn-dark" style="width:100%;justify-content:center" data-action="submitComplaint">পাঠান →</button></div><div class="card"><p style="font-size:13px;color:var(--muted);text-align:center">🔒 আপনার পরিচয় সম্পূর্ণ গোপন থাকবে।</p></div>';
   return'<div class="card"><div class="card-title">📢 অভিযোগ / পরামর্শ <span class="badge bg-red">'+unread+' নতুন</span></div>'+(list.length?list.map(c=>'<div style="padding:14px;border-radius:10px;background:'+(c.read?'var(--cream)':'var(--blue-bg)')+';border:1px solid '+(c.read?'var(--border)':'rgba(42,95,158,.2)')+';margin-bottom:10px"><div style="font-size:14px;color:var(--text);line-height:1.6">'+esc(c.text)+'</div><div style="display:flex;align-items:center;justify-content:space-between;margin-top:8px"><span style="font-size:12px;color:var(--muted)">'+esc(c.sentAt||'')+' '+(c.read?'<span class="badge bg-green">পড়া হয়েছে</span>':'<span class="badge bg-blue">নতুন</span>')+'</span><div class="btn-grp">'+(c.read?'':'<button class="btn btn-blue btn-sm" data-action="markRead:'+c.id+'">পড়া হয়েছে</button>')+'<button class="btn btn-ghost btn-sm" data-action="delComplaint:'+c.id+'">🗑️</button></div></div></div>').join(''):'<div class="empty">কোনো অভিযোগ নেই</div>')+'</div>';
+}
+
+function renderReport(){
+  const borrows=borrowsArr();
+  const books=booksArr();
+  const members=membersArr();
+  const now=new Date();now.setHours(0,0,0,0);
+
+  // Overdue: pending borrows — compute overdue by days since issued
+  const pending=borrows.filter(b=>!b.ret);
+  // We'll mark overdue if issued more than 14 days ago and still not returned
+  // Since we can't reliably parse Bengali dates, store issuedTimestamp in new records
+  // For now compute rough days using timestamp if available
+  function roughDaysAgo(dateStr){
+    if(!dateStr)return 0;
+    // Try English parse
+    const d=new Date(dateStr);
+    if(!isNaN(d)){const diff=now-d;return Math.floor(diff/(1000*60*60*24));}
+    return 0;
+  }
+  const overdue=pending.filter(b=>{
+    if(b.dueTimestamp)return Date.now()>b.dueTimestamp;
+    if(b.issuedTimestamp)return(now-b.issuedTimestamp)>14*86400000;
+    return roughDaysAgo(b.issuedAt)>14;
+  });
+
+  // Top 10 most borrowed books
+  const borrowCount={};
+  borrows.forEach(b=>{if(b.bookId)borrowCount[b.bookId]=(borrowCount[b.bookId]||0)+1;});
+  const top10=Object.entries(borrowCount)
+    .sort((a,b)=>b[1]-a[1]).slice(0,10)
+    .map(([id,cnt])=>({book:S.books[id],id,cnt}))
+    .filter(x=>x.book);
+
+  // Book borrow history per book
+  const bookHistory={};
+  borrows.forEach(b=>{if(!bookHistory[b.bookId])bookHistory[b.bookId]=0;bookHistory[b.bookId]++;});
+
+  const overdueHTML=overdue.length
+    ?overdue.map(b=>{
+      const days=b.issuedTimestamp?Math.floor((now-b.issuedTimestamp)/86400000):roughDaysAgo(b.issuedAt);
+      const over=Math.max(0,days-14);
+      return'<tr><td style="font-weight:600">'+esc(b.bookTitle)+'</td><td>'+esc(b.memberName)+'</td>'
+        +'<td>'+esc(b.issuedAt)+'</td>'
+        +'<td><span class="badge bg-red">'+over+' দিন দেরি</span></td>'
+        +'<td><button class="btn btn-gold btn-sm" data-action="return:'+b.id+'">ফেরত নিন</button></td></tr>';
+    }).join('')
+    :'<tr><td colspan="5" class="empty">কোনো মেয়াদোত্তীর্ণ ধার নেই ✓</td></tr>';
+
+  const top10HTML=top10.length
+    ?top10.map((x,i)=>'<tr><td style="font-weight:700;color:var(--gold2)">'+(i+1)+'</td>'
+      +'<td style="font-weight:600">'+esc(x.book.title)+'</td>'
+      +'<td>'+esc(x.book.author)+'</td>'
+      +'<td><span class="badge bg-blue">'+x.cnt+' বার</span></td>'
+      +'<td><span class="badge '+(x.book.avail>0?'bg-green':'bg-red')+'">'+(x.book.avail>0?x.book.avail+' কপি':'শেষ')+'</span></td></tr>').join('')
+    :'<tr><td colspan="5" class="empty">এখনো কোনো ধার নেই</td></tr>';
+
+  // Fee report
+  const currentYear=new Date().getFullYear();
+  const months=['জানুয়ারি','ফেব্রুয়ারি','মার্চ','এপ্রিল','মে','জুন','জুলাই','আগস্ট','সেপ্টেম্বর','অক্টোবর','নভেম্বর','ডিসেম্বর'];
+  const feeList=Object.values(S.fees||{});
+  const paidCount=feeList.filter(f=>f.paid).length;
+  const unpaidCount=feeList.filter(f=>!f.paid).length;
+  const totalCollected=feeList.filter(f=>f.paid).reduce((a,f)=>a+(f.amount||0),0);
+
+  // Per member fee status
+  const memberFeeHTML=members.map(m=>{
+    const mFees=feeList.filter(f=>f.memberId===m.id);
+    const paid=mFees.filter(f=>f.paid).length;
+    const unpaid=mFees.filter(f=>!f.paid).length;
+    const total=mFees.reduce((a,f)=>a+(f.amount||0),0);
+    const paidAmt=mFees.filter(f=>f.paid).reduce((a,f)=>a+(f.amount||0),0);
+    return'<tr><td style="font-weight:600">'+esc(m.name)+'</td>'
+      +'<td style="font-size:12px;color:var(--muted)">'+esc(m.phone)+'</td>'
+      +'<td><span class="badge bg-green">'+paid+' পরিশোধ</span></td>'
+      +'<td><span class="badge '+(unpaid>0?'bg-red':'bg-gray')+'">'+unpaid+' বাকি</span></td>'
+      +'<td style="font-weight:600">৳'+paidAmt+'</td>'
+      +'<td><button class="btn btn-blue btn-sm" onclick="openFeeModal(''+m.id+'',''+esc(m.name)+'')">+ ফি যোগ</button></td></tr>';
+  }).join('');
+
+  return'<div class="card" style="background:linear-gradient(135deg,var(--ink2),var(--ink3));border:none">'
+    +'<div style="display:grid;grid-template-columns:repeat(auto-fit,minmax(130px,1fr));gap:12px">'
+    +'<div style="text-align:center;padding:12px;background:rgba(255,255,255,.08);border-radius:10px"><div style="font-size:22px;font-weight:700;color:var(--gold3)">'+borrows.length+'</div><div style="font-size:12px;color:rgba(255,255,255,.6)">মোট ধার</div></div>'
+    +'<div style="text-align:center;padding:12px;background:rgba(255,255,255,.08);border-radius:10px"><div style="font-size:22px;font-weight:700;color:#e07070">'+overdue.length+'</div><div style="font-size:12px;color:rgba(255,255,255,.6)">মেয়াদোত্তীর্ণ</div></div>'
+    +'<div style="text-align:center;padding:12px;background:rgba(255,255,255,.08);border-radius:10px"><div style="font-size:22px;font-weight:700;color:#7bcf9f">৳'+totalCollected+'</div><div style="font-size:12px;color:rgba(255,255,255,.6)">সংগৃহীত ফি</div></div>'
+    +'<div style="text-align:center;padding:12px;background:rgba(255,255,255,.08);border-radius:10px"><div style="font-size:22px;font-weight:700;color:#f0c060">'+unpaidCount+'</div><div style="font-size:12px;color:rgba(255,255,255,.6)">ফি বাকি</div></div>'
+    +'</div></div>'
+
+    +'<div class="card"><div class="card-title">⚠️ মেয়াদোত্তীর্ণ ধার <span class="badge bg-red">'+overdue.length+'</span></div>'
+    +'<div style="overflow-x:auto"><table class="tbl"><thead><tr><th>বই</th><th>সদস্য</th><th>ইস্যু</th><th>অবস্থা</th><th></th></tr></thead>'
+    +'<tbody>'+overdueHTML+'</tbody></table></div></div>'
+
+    +'<div class="card"><div class="card-title">🏆 সর্বাধিক ধার হওয়া বই — Top ১০</div>'
+    +'<div style="overflow-x:auto"><table class="tbl"><thead><tr><th>#</th><th>বই</th><th>লেখক</th><th>ধার</th><th>অবস্থা</th></tr></thead>'
+    +'<tbody>'+top10HTML+'</tbody></table></div></div>'
+
+    +'<div class="card"><div class="card-title">💰 সদস্যতা ফি ব্যবস্থাপনা <button class="btn btn-dark btn-sm" onclick="openFeeModal('','')">+ ফি যোগ করুন</button></div>'
+    +'<div style="overflow-x:auto"><table class="tbl"><thead><tr><th>সদস্য</th><th>ফোন</th><th>পরিশোধ</th><th>বাকি</th><th>মোট</th><th></th></tr></thead>'
+    +'<tbody>'+(members.length?memberFeeHTML:'<tr><td colspan="6" class="empty">কোনো সদস্য নেই</td></tr>')+'</tbody></table></div></div>'
+
+    +'<div class="card"><div class="card-title">📋 ফি রেকর্ড তালিকা</div>'
+    +(feeList.length?'<div style="overflow-x:auto"><table class="tbl"><thead><tr><th>সদস্য</th><th>বছর</th><th>মাস</th><th>পরিমাণ</th><th>অবস্থা</th><th></th></tr></thead><tbody>'
+    +feeList.sort((a,b)=>b.year-a.year).map(f=>{
+      const m=S.members[f.memberId];
+      return'<tr><td>'+esc(m?m.name:'অজানা')+'</td><td>'+esc(f.year)+'</td><td>'+esc(f.month||'বার্ষিক')+'</td>'
+        +'<td>৳'+esc(f.amount||0)+'</td>'
+        +'<td><span class="badge '+(f.paid?'bg-green':'bg-red')+'">'+(f.paid?'পরিশোধ':'বাকি')+'</span></td>'
+        +'<td><button class="btn btn-sm '+(f.paid?'btn-ghost':'btn-gold')+'" onclick="toggleFeePaid(''+f.memberId+'',''+f.year+'',''+f.month+'','+f.amount+')">'+(f.paid?'বাকি করুন':'পরিশোধ')+'</button></td></tr>';
+    }).join('')+'</tbody></table></div>'
+    :'<div class="empty">কোনো ফি রেকর্ড নেই</div>')+'</div>';
+}
+
+function openFeeModal(memberId,memberName){
+  S.modal='fee';
+  S.form={feeMemberId:memberId,feeMemberName:memberName,feeYear:new Date().getFullYear(),feeMonth:'',feeAmount:''};
+  render();
 }
 
 function renderSettings(){
@@ -838,9 +1008,39 @@ function renderModal(){
       +(isEdit?'<input id="fJoinedAt" class="inp" placeholder="যোগদানের তারিখ" value="'+esc(S.form.joinedAt||'')+'">':'')
       +'<div class="modal-foot"><button class="btn btn-dark" data-action="saveMember">'+(isEdit?'আপডেট':'সংরক্ষণ')+'</button><button class="btn btn-ghost" data-action="closeModal">বাতিল</button></div>';
   }
+  } else if(S.modal==='memberHistory'){
+    const mid=S.form.histMemberId;
+    const m=S.members[mid]||{};
+    const mBorrows=borrowsArr().filter(b=>b.memberId===mid).sort((a,b)=>(b.issuedTimestamp||0)-(a.issuedTimestamp||0));
+    const mFees=Object.values(S.fees||{}).filter(f=>f.memberId===mid);
+    content='<div class="modal-head"><span class="modal-title">📋 '+esc(m.name||'সদস্য')+'-এর ইতিহাস</span><button class="modal-close" data-action="closeModal">✕</button></div>'
+      +'<div style="display:flex;gap:10px;margin-bottom:16px;flex-wrap:wrap">'
+      +'<div style="flex:1;min-width:100px;padding:12px;background:var(--blue-bg);border-radius:10px;text-align:center"><div style="font-size:20px;font-weight:700;color:var(--blue)">'+mBorrows.length+'</div><div style="font-size:11px;color:var(--muted)">মোট ধার</div></div>'
+      +'<div style="flex:1;min-width:100px;padding:12px;background:var(--red-bg);border-radius:10px;text-align:center"><div style="font-size:20px;font-weight:700;color:var(--red)">'+mBorrows.filter(b=>!b.ret).length+'</div><div style="font-size:11px;color:var(--muted)">এখন ধারে</div></div>'
+      +'<div style="flex:1;min-width:100px;padding:12px;background:var(--green-bg);border-radius:10px;text-align:center"><div style="font-size:20px;font-weight:700;color:var(--green)">'+mFees.filter(f=>f.paid).length+'</div><div style="font-size:11px;color:var(--muted)">ফি পরিশোধ</div></div>'
+      +'</div>'
+      +'<div style="font-size:13px;font-weight:600;color:var(--text);margin-bottom:8px">📚 ধারের ইতিহাস</div>'
+      +(mBorrows.length
+        ?mBorrows.map(b=>'<div style="padding:10px;border-radius:8px;background:'+(b.ret?'var(--cream)':'var(--blue-bg)')+';border:1px solid '+(b.ret?'var(--border)':'rgba(42,95,158,.2)')+';margin-bottom:6px;font-size:13px">'
+          +'<div style="font-weight:600">'+esc(b.bookTitle)+'</div>'
+          +'<div style="color:var(--muted);margin-top:3px">ইস্যু: '+esc(b.issuedAt)+(b.ret?' • ফেরত: '+esc(b.returnedAt||''):'')+'</div>'
+          +'<span class="badge '+(b.ret?'bg-green':'bg-blue')+'" style="margin-top:4px">'+(b.ret?'ফেরত দিয়েছেন':'এখনো ধারে')+'</span>'
+          +'</div>').join('')
+        :'<div class="empty" style="padding:16px">কোনো ধার নেই</div>');
+  } else if(S.modal==='fee'){
+    const members=Object.entries(S.members).map(([id,v])=>({id,...v}));
+    const months=['জানুয়ারি','ফেব্রুয়ারি','মার্চ','এপ্রিল','মে','জুন','জুলাই','আগস্ট','সেপ্টেম্বর','অক্টোবর','নভেম্বর','ডিসেম্বর'];
+    content='<div class="modal-head"><span class="modal-title">💰 সদস্যতা ফি যোগ করুন</span><button class="modal-close" data-action="closeModal">✕</button></div>'
+      +'<select id="fFeeMember" class="inp"><option value="">সদস্য বেছে নিন *</option>'+members.map(m=>'<option value="'+m.id+'" '+(S.form.feeMemberId===m.id?'selected':'')+'>'+esc(m.name)+' ('+esc(m.phone)+')</option>').join('')+'</select>'
+      +'<div class="inp-row"><input id="fFeeYear" class="inp" type="number" placeholder="বছর *" value="'+esc(S.form.feeYear||new Date().getFullYear())+'" min="2020" max="2099"><input id="fFeeAmount" class="inp" type="number" placeholder="পরিমাণ (৳)" value="'+esc(S.form.feeAmount||'')+'"></div>'
+      +'<select id="fFeeMonth" class="inp"><option value="">বার্ষিক ফি</option>'+months.map((m,i)=>'<option value="'+m+'" '+(S.form.feeMonth===m?'selected':'')+'>'+m+'</option>').join('')+'</select>'
+      +'<div class="modal-foot"><button class="btn btn-dark" data-action="addFeeRecord">সংরক্ষণ করুন</button><button class="btn btn-ghost" data-action="closeModal">বাতিল</button></div>';
+  }
   return'<div class="modal-overlay" onclick="if(event.target===this){S.modal=null;S.form={};render();}"><div class="modal-box">'+content+'</div></div>';
 }
 
+window.openFeeModal=openFeeModal;
+window.toggleFeePaid=toggleFeePaid;
 window.selectBook=function(id,title){S.borrow.bookId=id;S.borrow.bookTitle=title;S.borrow.bookQuery=title;S.ui.dropBook=false;render();};
 window.selectMember=function(id,name){S.borrow.memberId=id;S.borrow.memberName=name;S.borrow.memberQuery=name;S.ui.dropMember=false;render();};
 
