@@ -375,6 +375,7 @@ async function emailLogin(){
   catch(e){toast('ইমেইল বা পাসওয়ার্ড ভুল','err');}
 }
 async function logout(){
+  if(!confirm('লগআউট করবেন?'))return;
   if(S.user){fbRemove('onlineUsers/'+safeKey(S.user.uid));}
   const{auth,signOut}=window._auth;
   await signOut(auth);
@@ -430,18 +431,18 @@ function deleteBook(id){
 }
 
 function saveMember(){
-  const{name,phone,address,editId}=S.form;
+  const{name,phone,email,address,editId}=S.form;
   if(!name||!phone)return toast('নাম ও ফোন আবশ্যক','err');
   if(editId){
-    fbUpdate('members/'+editId,{name,phone,address:address||'',joinedAt:S.form.joinedAt||nowDate()})
+    fbUpdate('members/'+editId,{name,phone,email:email||'',address:address||'',joinedAt:S.form.joinedAt||nowDate()})
       .then(()=>{S.modal=null;S.form={};toast('আপডেট হয়েছে');render();});
   }else{
     if(Object.values(S.members).find(m=>m.phone===phone))return toast('এই ফোন আগেই আছে','err');
-    fbPush('members',{name,phone,address:address||'',joinedAt:nowDate(),active:true})
+    fbPush('members',{name,phone,email:email||'',address:address||'',joinedAt:nowDate(),active:true})
       .then(()=>{S.modal=null;S.form={};toast('সদস্য যোগ হয়েছে');render();});
   }
 }
-function editMember(id){const m=S.members[id];S.form={editId:id,name:m.name,phone:m.phone,address:m.address||'',joinedAt:m.joinedAt||''};S.modal='member';render();}
+function editMember(id){const m=S.members[id];S.form={editId:id,name:m.name,phone:m.phone,email:m.email||'',address:m.address||'',joinedAt:m.joinedAt||''};S.modal='member';render();}
 function deleteMember(id){
   if(Object.values(S.borrows).filter(b=>b.memberId===id&&!b.ret).length>0)return toast('ধার পেন্ডিং আছে','err');
   if(!confirm('সদস্যকে মুছে দেবেন?'))return;
@@ -577,7 +578,20 @@ function render(){
   if(!_tabSwitched)requestAnimationFrame(()=>window.scrollTo(0,_scrollY));
   _tabSwitched=false;
 }
-function switchTab(idx){_tabSwitched=true;S.tab=idx;S.selectedBook=null;S.search='';window.scrollTo(0,0);render();}
+function switchTab(idx){
+  _tabSwitched=true;
+  S.tab=idx;S.selectedBook=null;S.search='';
+  history.pushState({tab:idx},'',location.pathname+'?t='+idx);
+  window.scrollTo(0,0);render();
+}
+window.addEventListener('popstate',e=>{
+  _tabSwitched=true;
+  S.tab=(e.state&&e.state.tab!=null)?e.state.tab:0;
+  const bid=e.state&&e.state.book;
+  S.selectedBook=bid&&S.books[bid]?{id:bid,...S.books[bid]}:null;
+  S.newRating=0;S.newReview='';S.newComment='';S.search='';
+  window.scrollTo(0,0);render();
+});
 
 function attachEvents(){
   document.querySelector('.h-brand')?.addEventListener('click',handleLogoTap);
@@ -597,7 +611,7 @@ function attachEvents(){
     if(a==='submitReview')el.onclick=submitReview;
     if(a==='submitComment')el.onclick=submitComment;
     if(a==='submitComplaint')el.onclick=submitComplaint;
-    if(a==='backFromBook'){el.onclick=()=>{S.selectedBook=null;S.newRating=0;S.newReview='';S.newComment='';render();};}
+    if(a==='backFromBook'){el.onclick=()=>{history.back();};}
     if(a==='closeModal'){el.onclick=()=>{S.modal=null;S.form={};render();};}
     if(a==='openBook'){el.onclick=()=>{S.modal='book';S.form={};render();};}
     if(a==='openMember'){el.onclick=()=>{S.modal='member';S.form={};render();};}
@@ -616,6 +630,7 @@ function attachEvents(){
       _tabSwitched=true;const id=a.split(':')[1];
       S.selectedBook={id,...S.books[id]};
       S.newRating=0;S.newReview='';S.newComment='';
+      history.pushState({tab:S.tab,book:id},'',location.pathname+'?t='+S.tab+'&b='+id);
       window.scrollTo(0,0);render();
     };}
     if(a.startsWith('toggleReadlist:')){el.onclick=()=>toggleReadlist(a.split(':')[1]);}
@@ -645,6 +660,7 @@ function attachEvents(){
   bind('#fName',e=>{S.form.name=e.target.value;});
   bind('#fPhone',e=>{S.form.phone=e.target.value;});
   bind('#fAddress',e=>{S.form.address=e.target.value;});
+  bind('#fMemberEmail',e=>{S.form.email=e.target.value;});
   bind('#fJoinedAt',e=>{S.form.joinedAt=e.target.value;});
   bind('#fNewPass',e=>{S.form.newPass=e.target.value;});
   bind('#authName',e=>{S.authForm.name=e.target.value;});
@@ -763,7 +779,7 @@ function renderMembers(){
   const isAdmin=S.role==='admin';
   const q=S.search.toLowerCase().trim();
   const list=membersArr().filter(m=>!q||(m.name+m.phone).toLowerCase().includes(q));
-  return'<div class="section-head"><div class="search-wrap"><span class="search-icon">🔍</span><input id="globalSearch" class="inp search-inp" placeholder="নাম বা ফোন..." value="'+esc(S.search)+'" style="margin-bottom:0"></div>'+(isAdmin?'<button class="btn btn-dark" data-action="openMember">+ নতুন সদস্য</button>':'')+'</div>'+(list.length?list.map(m=>{const cnt=memberBorrowCount(m.id);return'<div class="card" style="margin-bottom:12px;padding:16px"><div style="display:flex;align-items:flex-start;justify-content:space-between;gap:10px"><div style="flex:1"><div style="font-weight:700;font-size:15px">'+esc(m.name)+'</div><div style="font-size:13px;color:var(--muted);margin-top:3px">📞 '+esc(m.phone)+'</div>'+(m.address?'<div style="font-size:13px;color:var(--muted);margin-top:2px">📍 '+esc(m.address)+'</div>':'')+'<div style="font-size:12px;color:var(--lighter);margin-top:4px">যোগ দিয়েছেন: '+esc(m.joinedAt||'')+'</div></div><div style="display:flex;flex-direction:column;align-items:flex-end;gap:8px"><span class="badge '+(cnt>0?'bg-amber':'bg-green')+'">'+cnt+' টি ধারে</span>'+(isAdmin?'<div class="btn-grp"><button class="btn btn-blue btn-sm" data-action="editMember:'+m.id+'">✏️</button><button class="btn btn-ghost btn-sm" data-action="delMember:'+m.id+'">🗑️</button></div>':'')+'</div></div></div>';}).join(''):'<div class="card"><div class="empty">কোনো সদস্য নেই</div></div>');
+  return'<div class="section-head"><div class="search-wrap"><span class="search-icon">🔍</span><input id="globalSearch" class="inp search-inp" placeholder="নাম বা ফোন..." value="'+esc(S.search)+'" style="margin-bottom:0"></div>'+(isAdmin?'<button class="btn btn-dark" data-action="openMember">+ নতুন সদস্য</button>':'')+'</div>'+(list.length?list.map(m=>{const cnt=memberBorrowCount(m.id);return'<div class="card" style="margin-bottom:12px;padding:16px"><div style="display:flex;align-items:flex-start;justify-content:space-between;gap:10px"><div style="flex:1"><div style="font-weight:700;font-size:15px">'+esc(m.name)+'</div><div style="font-size:13px;color:var(--muted);margin-top:3px">📞 '+esc(m.phone)+'</div>'+(m.email?'<div style="font-size:13px;color:var(--muted);margin-top:2px">✉️ '+esc(m.email)+'</div>':'')+(m.address?'<div style="font-size:13px;color:var(--muted);margin-top:2px">📍 '+esc(m.address)+'</div>':'')+'<div style="font-size:12px;color:var(--lighter);margin-top:4px">যোগ দিয়েছেন: '+esc(m.joinedAt||'')+'</div></div><div style="display:flex;flex-direction:column;align-items:flex-end;gap:8px"><span class="badge '+(cnt>0?'bg-amber':'bg-green')+'">'+cnt+' টি ধারে</span>'+(isAdmin?'<div class="btn-grp"><button class="btn btn-blue btn-sm" data-action="editMember:'+m.id+'">✏️</button><button class="btn btn-ghost btn-sm" data-action="delMember:'+m.id+'">🗑️</button></div>':'')+'</div></div></div>';}).join(''):'<div class="card"><div class="empty">কোনো সদস্য নেই</div></div>');
 }
 
 function renderBorrow(){
@@ -811,14 +827,16 @@ function renderModal(){
       +'<input id="fIsbn" class="inp" placeholder="ISBN (ঐচ্ছিক)" value="'+esc(S.form.isbn||'')+'">'
       +'<input id="fCoverUrl" class="inp" placeholder="বইয়ের ছবির URL (ঐচ্ছিক)" value="'+esc(S.form.coverUrl||'')+'" style="font-size:12px">'
       +previewHtml
-      +'<div class="url-tip"><b>📸 ছবির URL কোথায় পাবেন:</b>'
-      +'✅ <b>ImgBB</b> — imgbb.com এ আপলোড → <b>Direct link</b> কপি করুন (i.ibb.co/... দিয়ে শুরু)<br>'
-      +'✅ <b>Google Drive</b> — /file/d/ID/view লিংক দিলে স্বয়ংক্রিয়ভাবে কাজ করবে<br>'
-      +'❌ <b>ibb.co/xyz</b> শেয়ার লিংক কাজ করবে না — Direct link ব্যবহার করুন</div>'
       +'<div class="modal-foot"><button class="btn btn-dark" data-action="saveBook">'+(isEdit?'আপডেট':'সংরক্ষণ')+'</button><button class="btn btn-ghost" data-action="closeModal">বাতিল</button></div>';
   } else if(S.modal==='member'){
     const isEdit=!!S.form.editId;
-    content='<div class="modal-head"><span class="modal-title">'+(isEdit?'সদস্য এডিট':'নতুন সদস্য')+'</span><button class="modal-close" data-action="closeModal">✕</button></div><input id="fName" class="inp" placeholder="নাম *" value="'+esc(S.form.name||'')+'"><input id="fPhone" class="inp" placeholder="ফোন *" value="'+esc(S.form.phone||'')+'"><input id="fAddress" class="inp" placeholder="ঠিকানা" value="'+esc(S.form.address||'')+'">'+(isEdit?'<input id="fJoinedAt" class="inp" placeholder="যোগদানের তারিখ" value="'+esc(S.form.joinedAt||'')+'">':'')+'<div class="modal-foot"><button class="btn btn-dark" data-action="saveMember">'+(isEdit?'আপডেট':'সংরক্ষণ')+'</button><button class="btn btn-ghost" data-action="closeModal">বাতিল</button></div>';
+    content='<div class="modal-head"><span class="modal-title">'+(isEdit?'সদস্য এডিট':'নতুন সদস্য')+'</span><button class="modal-close" data-action="closeModal">✕</button></div>'
+      +'<input id="fName" class="inp" placeholder="নাম *" value="'+esc(S.form.name||'')+'">'
+      +'<input id="fPhone" class="inp" placeholder="ফোন *" value="'+esc(S.form.phone||'')+'">'
+      +'<input id="fMemberEmail" class="inp" type="email" placeholder="ইমেইল" value="'+esc(S.form.email||'')+'">'
+      +'<input id="fAddress" class="inp" placeholder="ঠিকানা" value="'+esc(S.form.address||'')+'">'
+      +(isEdit?'<input id="fJoinedAt" class="inp" placeholder="যোগদানের তারিখ" value="'+esc(S.form.joinedAt||'')+'">':'')
+      +'<div class="modal-foot"><button class="btn btn-dark" data-action="saveMember">'+(isEdit?'আপডেট':'সংরক্ষণ')+'</button><button class="btn btn-ghost" data-action="closeModal">বাতিল</button></div>';
   }
   return'<div class="modal-overlay" onclick="if(event.target===this){S.modal=null;S.form={};render();}"><div class="modal-box">'+content+'</div></div>';
 }
