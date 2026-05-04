@@ -224,6 +224,16 @@ body{font-family:'Hind Siliguri',sans-serif;background:var(--cream);color:var(--
 /* Image URL tip box */
 .url-tip{background:var(--blue-bg);border:1px solid rgba(42,95,158,.2);border-radius:8px;padding:10px 14px;font-size:12px;color:var(--blue);margin-bottom:10px;line-height:1.6;}
 .url-tip b{display:block;margin-bottom:4px;}
+
+/* Notice styles */
+.notice-card{background:#fff;border:1px solid var(--border);border-radius:14px;padding:20px;margin-bottom:14px;box-shadow:var(--shadow);position:relative;overflow:hidden;}
+.notice-card::before{content:'';position:absolute;left:0;top:0;bottom:0;width:4px;background:var(--gold);}
+.notice-card.urgent::before{background:var(--red);}
+.notice-card.info::before{background:var(--blue);}
+.notice-title{font-size:15px;font-weight:700;color:var(--text);margin-bottom:6px;}
+.notice-body{font-size:14px;color:var(--muted);line-height:1.7;}
+.notice-meta{font-size:11px;color:var(--lighter);margin-top:10px;display:flex;align-items:center;gap:10px;flex-wrap:wrap;}
+.notice-form{background:var(--cream);border:1px solid var(--border);border-radius:12px;padding:18px;margin-bottom:18px;}
 </style>
 </head>
 <body>
@@ -246,7 +256,7 @@ const GOOGLE_SVG=`<svg width="18" height="18" viewBox="0 0 48 48"><path fill="#E
 
 let S={
   screen:'loading',role:'guest',tab:0,user:null,
-  books:{},members:{},borrows:{},passes:[],complaints:{},reviews:{},discussions:{},
+  books:{},members:{},borrows:{},passes:[],complaints:{},reviews:{},discussions:{},notices:{},
   onlineUsers:{},
   modal:null,form:{},
   borrow:{bookId:'',bookTitle:'',memberId:'',memberName:'',bookQuery:'',memberQuery:''},
@@ -259,11 +269,10 @@ let S={
   myReadlist:{},myFavs:{}
 };
 
+// ── UPDATED getTabList — "আমার তালিকা" removed from nav; "নোটিশ" added ──
 function getTabList(){
   const isAdmin=S.role==='admin';
-  const isUser=S.role==='user'||isAdmin;
-  const tabs=['ড্যাশবোর্ড','বইয়ের তালিকা','অনুসন্ধান'];
-  if(isUser)tabs.push('আমার তালিকা');
+  const tabs=['ড্যাশবোর্ড','বইয়ের তালিকা','অনুসন্ধান','নোটিশ'];
   if(isAdmin){tabs.push('সদস্যবৃন্দ');tabs.push('বই ধার');tabs.push('অভিযোগ');tabs.push('সেটিংস');}
   else tabs.push('অভিযোগ');
   return tabs;
@@ -284,21 +293,15 @@ function isAdminEmail(email){
 }
 
 // ── IMAGE URL AUTO-FIX ──
-// Converts various URL formats to a directly embeddable image URL
 function fixImgUrl(url){
   if(!url||!url.trim())return'';
   url=url.trim();
-  // Google Drive /file/d/ID/view or /file/d/ID format
   const gd1=url.match(/drive\.google\.com\/file\/d\/([a-zA-Z0-9_-]+)/);
   if(gd1)return'https://lh3.googleusercontent.com/d/'+gd1[1];
-  // Google Drive uc?id= or open?id= format
   const gd2=url.match(/drive\.google\.com.*[?&]id=([a-zA-Z0-9_-]+)/);
   if(gd2)return'https://lh3.googleusercontent.com/d/'+gd2[1];
-  // ibb.co SHARE page (not direct) — try to convert to i.ibb.co
-  // e.g. https://ibb.co/rf0BwjXj → https://i.ibb.co/rf0BwjXj (may not always work without filename)
   const ibbShare=url.match(/^https?:\/\/ibb\.co(\.com)?\/([a-zA-Z0-9]+)$/);
   if(ibbShare)return'https://i.ibb.co/'+ibbShare[2]+'/img.jpg';
-  // Already a direct image URL — pass through
   return url;
 }
 
@@ -309,6 +312,7 @@ function initListeners(){
   fbListen('complaints',v=>{S.complaints=v||{};tryRender();});
   fbListen('reviews',v=>{S.reviews=v||{};tryRender();});
   fbListen('discussions',v=>{S.discussions=v||{};tryRender();});
+  fbListen('notices',v=>{S.notices=v||{};tryRender();});
   fbListen('onlineUsers',v=>{S.onlineUsers=v||{};tryRender();});
   fbListen('passes',v=>{
     if(v){S.passes=typeof v==='object'?Object.values(v):v;}
@@ -520,6 +524,30 @@ function submitComplaint(){
 function markComplaintRead(id){fbUpdate('complaints/'+id,{read:true});}
 function deleteComplaint(id){if(!confirm('মুছে দেবেন?'))return;fbRemove('complaints/'+id).then(()=>toast('মুছে গেছে'));}
 
+// ── NOTICE FUNCTIONS ──
+function saveNotice(){
+  const title=(S.form.noticeTitle||'').trim();
+  const body=(S.form.noticeBody||'').trim();
+  const type=S.form.noticeType||'normal';
+  if(!title||!body)return toast('শিরোনাম ও বিষয়বস্তু আবশ্যক','err');
+  if(S.form.noticeEditId){
+    fbUpdate('notices/'+S.form.noticeEditId,{title,body,type,updatedAt:nowDate()})
+      .then(()=>{S.modal=null;S.form={};toast('নোটিশ আপডেট হয়েছে');render();});
+  }else{
+    fbPush('notices',{title,body,type,createdAt:nowDate()})
+      .then(()=>{S.modal=null;S.form={};toast('নোটিশ যোগ হয়েছে ✓');render();});
+  }
+}
+function editNotice(id){
+  const n=S.notices[id];
+  S.form={noticeEditId:id,noticeTitle:n.title,noticeBody:n.body,noticeType:n.type||'normal'};
+  S.modal='notice';render();
+}
+function deleteNotice(id){
+  if(!confirm('নোটিশ মুছে দেবেন?'))return;
+  fbRemove('notices/'+id).then(()=>toast('মুছে গেছে'));
+}
+
 function addPass(){
   const pw=(S.form.newPass||'').trim();
   if(pw.length<6)return toast('কমপক্ষে ৬ অক্ষর','err');
@@ -543,6 +571,7 @@ function memberBorrowCount(mId){return Object.values(S.borrows).filter(b=>b.memb
 function booksArr(){return Object.entries(S.books).map(([id,v])=>({id,...v}));}
 function membersArr(){return Object.entries(S.members).map(([id,v])=>({id,...v}));}
 function borrowsArr(){return Object.entries(S.borrows).map(([id,v])=>({id,...v}));}
+function noticesArr(){return Object.entries(S.notices).map(([id,v])=>({id,...v})).reverse();}
 function esc(s){if(!s)return'';return String(s).replace(/&/g,'&amp;').replace(/</g,'&lt;').replace(/>/g,'&gt;').replace(/"/g,'&quot;').replace(/'/g,'&#39;');}
 function starsHTML(rating,interactive){
   let h='<div class="stars">';
@@ -553,7 +582,6 @@ function starsHTML(rating,interactive){
   return h+'</div>';
 }
 
-// ── COVER HTML — uses fixImgUrl ──
 function bookCoverHTML(b,height){
   height=height||120;
   const url=fixImgUrl(b.cover||'');
@@ -611,12 +639,18 @@ function attachEvents(){
     if(a==='submitReview')el.onclick=submitReview;
     if(a==='submitComment')el.onclick=submitComment;
     if(a==='submitComplaint')el.onclick=submitComplaint;
+    if(a==='saveNotice')el.onclick=saveNotice;
     if(a==='backFromBook'){el.onclick=()=>{history.back();};}
     if(a==='closeModal'){el.onclick=()=>{S.modal=null;S.form={};render();};}
     if(a==='openBook'){el.onclick=()=>{S.modal='book';S.form={};render();};}
     if(a==='openMember'){el.onclick=()=>{S.modal='member';S.form={};render();};}
+    if(a==='openNotice'){el.onclick=()=>{S.modal='notice';S.form={noticeType:'normal'};render();};}
     if(a==='openLogin'){el.onclick=()=>{S.modal='auth';render();};}
-    if(a==='goMyList'){el.onclick=()=>switchTab(tabIndex('আমার তালিকা'));}
+    // Avatar click → আমার তালিকা (special handling: if not logged in, open login)
+    if(a==='goMyList'){el.onclick=()=>{
+      if(!S.user){S.modal='auth';render();}
+      else{S.modal='mylist';render();}
+    };}
     if(a.startsWith('tab:')){el.onclick=()=>switchTab(parseInt(a.split(':')[1]));}
     if(a.startsWith('return:')){el.onclick=()=>returnBorrow(a.split(':')[1]);}
     if(a.startsWith('delBook:')){el.onclick=()=>deleteBook(a.split(':')[1]);}
@@ -626,6 +660,8 @@ function attachEvents(){
     if(a.startsWith('delPass:')){el.onclick=()=>removePass(decodeURIComponent(a.split(':')[1]));}
     if(a.startsWith('markRead:')){el.onclick=()=>markComplaintRead(a.split(':')[1]);}
     if(a.startsWith('delComplaint:')){el.onclick=()=>deleteComplaint(a.split(':')[1]);}
+    if(a.startsWith('editNotice:')){el.onclick=()=>editNotice(a.split(':')[1]);}
+    if(a.startsWith('delNotice:')){el.onclick=()=>deleteNotice(a.split(':')[1]);}
     if(a.startsWith('openBookDetail:')){el.onclick=()=>{
       _tabSwitched=true;const id=a.split(':')[1];
       S.selectedBook={id,...S.books[id]};
@@ -649,7 +685,6 @@ function attachEvents(){
   bind('#fShelf',e=>{S.form.shelf=e.target.value;});
   bind('#fCoverUrl',e=>{
     S.form.coverUrl=e.target.value;
-    // Live preview
     const prev=document.getElementById('coverPreview');
     if(prev){
       const fixed=fixImgUrl(e.target.value);
@@ -663,6 +698,9 @@ function attachEvents(){
   bind('#fMemberEmail',e=>{S.form.email=e.target.value;});
   bind('#fJoinedAt',e=>{S.form.joinedAt=e.target.value;});
   bind('#fNewPass',e=>{S.form.newPass=e.target.value;});
+  bind('#fNoticeTitle',e=>{S.form.noticeTitle=e.target.value;});
+  bind('#fNoticeBody',e=>{S.form.noticeBody=e.target.value;});
+  bind('#fNoticeType',e=>{S.form.noticeType=e.target.value;});
   bind('#authName',e=>{S.authForm.name=e.target.value;});
   bind('#authEmail',e=>{S.authForm.email=e.target.value;});
   bind('#authPassword',e=>{S.authForm.password=e.target.value;});
@@ -692,6 +730,7 @@ function renderApp(){
     let avHTML=photo
       ?'<img src="'+esc(photo)+'" width="34" height="34" referrerpolicy="no-referrer" onerror="this.outerHTML=\'<div class=av-ph>'+name.charAt(0).toUpperCase()+'</div>\'" alt="">'
       :'<div class="av-ph">'+name.charAt(0).toUpperCase()+'</div>';
+    // Avatar click → opens আমার তালিকা modal
     hRight='<button class="h-avatar-btn" data-action="goMyList" title="আমার তালিকা">'+avHTML+'</button>';
     hRight+='<span class="sync-dot '+(S.syncLive?'live':'')+'"></span>';
   }else{
@@ -706,7 +745,7 @@ function renderTab(){
   if(name==='ড্যাশবোর্ড')return renderDash();
   if(name==='বইয়ের তালিকা')return renderBooks();
   if(name==='অনুসন্ধান')return renderSearch();
-  if(name==='আমার তালিকা')return renderMyList();
+  if(name==='নোটিশ')return renderNotice();
   if(name==='সদস্যবৃন্দ')return renderMembers();
   if(name==='বই ধার')return renderBorrow();
   if(name==='অভিযোগ')return renderComplaints();
@@ -723,7 +762,9 @@ function renderDash(){
   const pending=borrows.filter(b=>!b.ret).length;
   const recent=borrows.slice(-6).reverse();
   const topBooks=booksArr().filter(b=>avgRating(b.id)>0).sort((a,b)=>avgRating(b.id)-avgRating(a.id)).slice(0,4);
-  return'<div class="stats"><div class="stat-card"><div class="stat-icon si-gold">📚</div><div><div class="stat-val">'+books.length+'</div><div class="stat-lbl">মোট বই</div></div></div><div class="stat-card"><div class="stat-icon si-blue">👥</div><div><div class="stat-val">'+Object.keys(S.members).length+'</div><div class="stat-lbl">সদস্য</div></div></div><div class="stat-card"><div class="stat-icon si-red">⏳</div><div><div class="stat-val">'+pending+'</div><div class="stat-lbl">ধারে আছে</div></div></div><div class="stat-card"><div class="stat-icon si-green">✅</div><div><div class="stat-val">'+books.reduce((a,b)=>a+b.avail,0)+'</div><div class="stat-lbl">পাওয়া যাচ্ছে</div></div></div></div>'+(topBooks.length?'<div class="card"><div class="card-title">⭐ সেরা রেটিং প্রাপ্ত বই</div><div class="book-grid">'+topBooks.map(b=>bookCardHTML(b)).join('')+'</div></div>':'')+'<div class="card"><div class="card-title">সাম্প্রতিক কার্যক্রম <span style="font-size:12px;color:var(--muted);font-weight:400">🔴 Live</span></div>'+(recent.length?recent.map(b=>'<div class="activity-item"><div class="act-dot" style="background:'+(b.ret?'var(--green)':'var(--blue)')+'"></div><div class="act-text"><b>'+esc(b.bookTitle)+'</b> — '+esc(b.memberName)+'</div><span class="badge '+(b.ret?'bg-green':'bg-blue')+'">'+(b.ret?'ফেরত':'ধারে')+'</span></div>').join(''):'<div class="empty">এখনো কোনো কার্যক্রম নেই</div>')+'</div>';
+  const latestNotices=noticesArr().slice(0,2);
+  const noticePreview=latestNotices.length?'<div class="card"><div class="card-title">📢 সাম্প্রতিক নোটিশ <button class="btn btn-ghost btn-sm" data-action="tab:'+tabIndex('নোটিশ')+'">সব দেখুন</button></div>'+latestNotices.map(n=>'<div class="notice-card '+(n.type==='urgent'?'urgent':n.type==='info'?'info':'')+'" style="margin-bottom:10px"><div class="notice-title">'+esc(n.title)+'</div><div class="notice-body" style="display:-webkit-box;-webkit-line-clamp:2;-webkit-box-orient:vertical;overflow:hidden">'+esc(n.body)+'</div><div class="notice-meta"><span>'+esc(n.createdAt||'')+'</span></div></div>').join('')+'</div>':'';
+  return'<div class="stats"><div class="stat-card"><div class="stat-icon si-gold">📚</div><div><div class="stat-val">'+books.length+'</div><div class="stat-lbl">মোট বই</div></div></div><div class="stat-card"><div class="stat-icon si-blue">👥</div><div><div class="stat-val">'+Object.keys(S.members).length+'</div><div class="stat-lbl">সদস্য</div></div></div><div class="stat-card"><div class="stat-icon si-red">⏳</div><div><div class="stat-val">'+pending+'</div><div class="stat-lbl">ধারে আছে</div></div></div><div class="stat-card"><div class="stat-icon si-green">✅</div><div><div class="stat-val">'+books.reduce((a,b)=>a+b.avail,0)+'</div><div class="stat-lbl">পাওয়া যাচ্ছে</div></div></div></div>'+noticePreview+(topBooks.length?'<div class="card"><div class="card-title">⭐ সেরা রেটিং প্রাপ্ত বই</div><div class="book-grid">'+topBooks.map(b=>bookCardHTML(b)).join('')+'</div></div>':'')+'<div class="card"><div class="card-title">সাম্প্রতিক কার্যক্রম <span style="font-size:12px;color:var(--muted);font-weight:400">🔴 Live</span></div>'+(recent.length?recent.map(b=>'<div class="activity-item"><div class="act-dot" style="background:'+(b.ret?'var(--green)':'var(--blue)')+'"></div><div class="act-text"><b>'+esc(b.bookTitle)+'</b> — '+esc(b.memberName)+'</div><span class="badge '+(b.ret?'bg-green':'bg-blue')+'">'+(b.ret?'ফেরত':'ধারে')+'</span></div>').join(''):'<div class="empty">এখনো কোনো কার্যক্রম নেই</div>')+'</div>';
 }
 
 function bookCardHTML(b,showAdminBtns){
@@ -747,7 +788,6 @@ function renderBookDetail(){
   const uid=S.user?safeKey(S.user.uid):null;
   const myReview=uid&&rv[uid];
   const inRL=S.myReadlist[b.id];const inFav=S.myFavs[b.id];
-  // Large cover using fixImgUrl
   const fixedCover=fixImgUrl(b.cover||'');
   const coverLarge=fixedCover
     ?'<img src="'+esc(fixedCover)+'" style="width:100px;height:140px;object-fit:cover;border-radius:10px;border:1px solid var(--border)" referrerpolicy="no-referrer" loading="lazy" onerror="this.outerHTML=\'<div style=width:100px;height:140px;background:linear-gradient(135deg,var(--ink2),var(--ink3));border-radius:10px;display:flex;align-items:center;justify-content:center;font-size:40px>📖</div>\'">'
@@ -761,8 +801,18 @@ function renderSearch(){
   return'<div class="card"><div class="card-title">বই অনুসন্ধান</div><div class="inp-row"><div class="search-wrap" style="max-width:100%"><span class="search-icon">🔍</span><input id="globalSearch" class="inp search-inp" placeholder="নাম বা লেখক..." value="'+esc(S.search)+'" style="margin-bottom:0"></div><select id="searchCat" class="inp" style="margin-bottom:0"><option value="">সব বিভাগ</option>'+CATS.map(c=>'<option value="'+c+'" '+(S.searchCat===c?'selected':'')+'>'+c+'</option>').join('')+'</select></div></div>'+(q||cat?'<div class="book-grid">'+(books.length?books.map(b=>bookCardHTML(b)).join(''):'<div class="card" style="grid-column:1/-1"><div class="empty">কোনো বই পাওয়া যায়নি</div></div>')+'</div>':'<div class="card"><div class="empty">উপরে লিখুন বা বিভাগ বেছে নিন...</div></div>');
 }
 
-function renderMyList(){
-  if(!S.user)return'<div class="card"><div class="empty">লগইন করুন</div></div>';
+// ── NEW: renderNotice ──
+function renderNotice(){
+  const isAdmin=S.role==='admin';
+  const list=noticesArr();
+  const typeLabel={normal:'সাধারণ',urgent:'জরুরি',info:'তথ্য'};
+  const typeColor={normal:'bg-gray',urgent:'bg-red',info:'bg-blue'};
+  return'<div class="section-head"><h2 style="font-size:16px;font-weight:700;color:var(--text)">📢 নোটিশ বোর্ড</h2>'+(isAdmin?'<button class="btn btn-dark" data-action="openNotice">+ নতুন নোটিশ</button>':'')+'</div>'+(list.length?list.map(n=>'<div class="notice-card '+(n.type==='urgent'?'urgent':n.type==='info'?'info':'')+'" >'+'<div style="display:flex;align-items:flex-start;justify-content:space-between;gap:8px"><div style="flex:1"><div class="notice-title">'+esc(n.title)+'</div><div class="notice-body">'+esc(n.body)+'</div><div class="notice-meta"><span class="badge '+( typeColor[n.type]||'bg-gray')+'">'+( typeLabel[n.type]||'সাধারণ')+'</span><span>'+esc(n.createdAt||'')+'</span>'+(n.updatedAt?'<span>(সম্পাদিত: '+esc(n.updatedAt)+')</span>':'')+'</div></div>'+(isAdmin?'<div class="btn-grp" style="flex-shrink:0"><button class="btn btn-blue btn-sm" data-action="editNotice:'+n.id+'">✏️</button><button class="btn btn-ghost btn-sm" data-action="delNotice:'+n.id+'">🗑️</button></div>':'')+'</div></div>').join(''):'<div class="card"><div class="empty">এখনো কোনো নোটিশ নেই</div></div>');
+}
+
+// ── renderMyList — now shown as modal from avatar click ──
+function renderMyListContent(){
+  if(!S.user)return'<div class="empty">লগইন করুন</div>';
   const isAdmin=S.role==='admin';
   const isEmailAdmin=S.user&&isAdminEmail(S.user.email);
   const isPwAdmin=isAdmin&&!isEmailAdmin;
@@ -771,8 +821,11 @@ function renderMyList(){
   const av=S.user.photoURL
     ?'<img src="'+esc(S.user.photoURL)+'" class="profile-avatar" referrerpolicy="no-referrer" onerror="this.outerHTML=\'<div class=profile-avatar-placeholder>'+((S.user.displayName||'?').charAt(0).toUpperCase())+'</div>\'">'
     :'<div class="profile-avatar-placeholder">'+(S.user.displayName||'?').charAt(0).toUpperCase()+'</div>';
-  const profileCard='<div class="profile-card">'+av+'<div class="profile-name">'+esc(S.user.displayName||'')+'</div><div class="profile-email">'+esc(S.user.email||'')+'</div><div style="margin-top:6px"><span class="profile-role">'+(isAdmin?'⚙ অ্যাডমিন':'👤 সাধারণ সদস্য')+'</span></div><div class="profile-actions"><button class="btn-profile-action btn-profile-logout" data-action="logout">🚪 লগআউট</button>'+(isPwAdmin?'<button class="btn-profile-action btn-profile-admin-exit" data-action="adminExitMode">Admin মোড বন্ধ</button>':'')+'</div></div>';
-  return profileCard+'<div class="card"><div class="card-title">📚 পড়ার তালিকা <span class="badge bg-blue">'+readBooks.length+'</span></div>'+(readBooks.length?'<div class="book-grid">'+readBooks.map(b=>'<div class="book-card" data-action="openBookDetail:'+b.id+'">'+bookCoverHTML(b)+'<div class="book-title">'+esc(b.title)+'</div><div class="book-author">'+esc(b.author)+'</div><button class="btn btn-ghost btn-sm" style="margin-top:8px;width:100%;justify-content:center" data-action="toggleReadlist:'+b.id+'" onclick="event.stopPropagation()">বাদ দিন</button></div>').join('')+'</div>':'<div class="empty">পড়ার তালিকা খালি</div>')+'</div><div class="card"><div class="card-title">❤️ প্রিয় বই <span class="badge bg-red">'+favBooks.length+'</span></div>'+(favBooks.length?'<div class="book-grid">'+favBooks.map(b=>'<div class="book-card" data-action="openBookDetail:'+b.id+'">'+bookCoverHTML(b)+'<div class="book-title">'+esc(b.title)+'</div><div class="book-author">'+esc(b.author)+'</div><button class="btn btn-ghost btn-sm" style="margin-top:8px;width:100%;justify-content:center" data-action="toggleFav:'+b.id+'" onclick="event.stopPropagation()">বাদ দিন</button></div>').join('')+'</div>':'<div class="empty">প্রিয় তালিকা খালি</div>')+'</div>';
+  return'<div style="background:linear-gradient(135deg,var(--ink2),var(--ink3));border-radius:12px;padding:18px;color:#fff;margin-bottom:16px;position:relative;overflow:hidden"><div style="position:absolute;top:-30px;right:-30px;width:100px;height:100px;border-radius:50%;background:rgba(201,168,76,.08);border:1px solid rgba(201,168,76,.15)"></div>'+av+'<div style="font-size:16px;font-weight:700;color:#fff;margin-bottom:2px">'+esc(S.user.displayName||'')+'</div><div style="font-size:12px;color:rgba(255,255,255,.6);margin-bottom:6px">'+esc(S.user.email||'')+'</div><span class="profile-role">'+(isAdmin?'⚙ অ্যাডমিন':'👤 সাধারণ সদস্য')+'</span><div style="display:flex;gap:8px;margin-top:12px;flex-wrap:wrap"><button class="btn-profile-action btn-profile-logout" data-action="logout">🚪 লগআউট</button>'+(isPwAdmin?'<button class="btn-profile-action btn-profile-admin-exit" data-action="adminExitMode">Admin মোড বন্ধ</button>':'')+'</div></div>'
+  +'<div style="margin-bottom:12px"><div style="font-size:14px;font-weight:600;margin-bottom:10px">📚 পড়ার তালিকা <span class="badge bg-blue">'+readBooks.length+'</span></div>'
+  +(readBooks.length?'<div style="display:flex;flex-direction:column;gap:8px">'+readBooks.map(b=>'<div style="display:flex;align-items:center;gap:10px;padding:8px;background:var(--cream);border-radius:8px;border:1px solid var(--border)"><div style="font-size:11px;font-weight:600;flex:1;line-height:1.3">'+esc(b.title)+'</div><button class="btn btn-ghost btn-sm" data-action="toggleReadlist:'+b.id+'" style="font-size:11px;padding:4px 8px">✕</button></div>').join('')+'</div>':'<div style="font-size:13px;color:var(--lighter);text-align:center;padding:12px">পড়ার তালিকা খালি</div>')+'</div>'
+  +'<div><div style="font-size:14px;font-weight:600;margin-bottom:10px">❤️ প্রিয় বই <span class="badge bg-red">'+favBooks.length+'</span></div>'
+  +(favBooks.length?'<div style="display:flex;flex-direction:column;gap:8px">'+favBooks.map(b=>'<div style="display:flex;align-items:center;gap:10px;padding:8px;background:var(--cream);border-radius:8px;border:1px solid var(--border)"><div style="font-size:11px;font-weight:600;flex:1;line-height:1.3">'+esc(b.title)+'</div><button class="btn btn-ghost btn-sm" data-action="toggleFav:'+b.id+'" style="font-size:11px;padding:4px 8px">✕</button></div>').join('')+'</div>':'<div style="font-size:13px;color:var(--lighter);text-align:center;padding:12px">প্রিয় তালিকা খালি</div>')+'</div>';
 }
 
 function renderMembers(){
@@ -815,6 +868,9 @@ function renderModal(){
   let content='';
   if(S.modal==='auth'){
     content='<div class="modal-head"><span class="modal-title">দিগন্ত পাঠাগারে প্রবেশ</span><button class="modal-close" data-action="closeModal">✕</button></div><div class="auth-tab"><button class="auth-tab-btn '+(S.authTab==='login'?'on':'')+'" data-action="authTabLogin">লগইন</button><button class="auth-tab-btn '+(S.authTab==='register'?'on':'')+'" data-action="authTabRegister">রেজিস্ট্রেশন</button></div><button class="btn-google" data-action="googleLogin">'+GOOGLE_SVG+' Google দিয়ে প্রবেশ করুন</button><div class="divider">অথবা</div>'+(S.authTab==='register'?'<input id="authName" class="inp" placeholder="আপনার নাম *" value="'+esc(S.authForm.name||'')+'">':'')+'<input id="authEmail" class="inp" type="email" placeholder="ইমেইল *" value="'+esc(S.authForm.email||'')+'"><input id="authPassword" class="inp" type="password" placeholder="পাসওয়ার্ড *" value="'+esc(S.authForm.password||'')+'"><button class="btn btn-dark" style="width:100%;justify-content:center" data-action="'+(S.authTab==='login'?'emailLogin':'emailRegister')+'">'+(S.authTab==='login'?'লগইন করুন →':'অ্যাকাউন্ট তৈরি করুন →')+'</button>';
+  } else if(S.modal==='mylist'){
+    // আমার তালিকা as modal
+    content='<div class="modal-head"><span class="modal-title">আমার তালিকা</span><button class="modal-close" data-action="closeModal">✕</button></div>'+renderMyListContent();
   } else if(S.modal==='book'){
     const isEdit=!!S.form.editId;
     const fixedPreview=fixImgUrl(S.form.coverUrl||'');
@@ -837,6 +893,13 @@ function renderModal(){
       +'<input id="fAddress" class="inp" placeholder="ঠিকানা" value="'+esc(S.form.address||'')+'">'
       +(isEdit?'<input id="fJoinedAt" class="inp" placeholder="যোগদানের তারিখ" value="'+esc(S.form.joinedAt||'')+'">':'')
       +'<div class="modal-foot"><button class="btn btn-dark" data-action="saveMember">'+(isEdit?'আপডেট':'সংরক্ষণ')+'</button><button class="btn btn-ghost" data-action="closeModal">বাতিল</button></div>';
+  } else if(S.modal==='notice'){
+    const isEdit=!!S.form.noticeEditId;
+    content='<div class="modal-head"><span class="modal-title">'+(isEdit?'নোটিশ সম্পাদনা':'নতুন নোটিশ')+'</span><button class="modal-close" data-action="closeModal">✕</button></div>'
+      +'<input id="fNoticeTitle" class="inp" placeholder="শিরোনাম *" value="'+esc(S.form.noticeTitle||'')+'">'
+      +'<select id="fNoticeType" class="inp"><option value="normal" '+(S.form.noticeType==='normal'?'selected':'')+'>সাধারণ</option><option value="urgent" '+(S.form.noticeType==='urgent'?'selected':'')+'>🔴 জরুরি</option><option value="info" '+(S.form.noticeType==='info'?'selected':'')+'>🔵 তথ্যমূলক</option></select>'
+      +'<textarea id="fNoticeBody" class="inp" rows="5" placeholder="নোটিশের বিষয়বস্তু *" style="resize:vertical">'+esc(S.form.noticeBody||'')+'</textarea>'
+      +'<div class="modal-foot"><button class="btn btn-dark" data-action="saveNotice">'+(isEdit?'আপডেট করুন':'প্রকাশ করুন')+'</button><button class="btn btn-ghost" data-action="closeModal">বাতিল</button></div>';
   }
   return'<div class="modal-overlay" onclick="if(event.target===this){S.modal=null;S.form={};render();}"><div class="modal-box">'+content+'</div></div>';
 }
