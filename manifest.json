@@ -1,25 +1,65 @@
 {
   "name": "দিগন্ত পাঠাগার",
   "short_name": "দিগন্ত",
-  "description": "দিগন্ত পাঠাগার — সবার জন্য উন্মুক্ত পাঠাগার",
-  "start_url": "/Diganta-Pathagar/",
+  "description": "দিগন্ত পাঠাগার — সবার জন্য উন্মুক্ত পাঠাগার। বই পড়ুন, ধার নিন, রিভিউ দিন।",
+  "start_url": "/Diganta-Pathagar/?source=pwa",
   "scope": "/Diganta-Pathagar/",
   "display": "standalone",
   "background_color": "#1a1a2e",
   "theme_color": "#1a1a2e",
   "orientation": "portrait-primary",
+  "lang": "bn",
+  "dir": "ltr",
+  "categories": ["books", "education", "lifestyle"],
   "icons": [
     {
       "src": "icon-192.png",
       "sizes": "192x192",
       "type": "image/png",
-      "purpose": "any maskable"
+      "purpose": "any"
+    },
+    {
+      "src": "icon-192.png",
+      "sizes": "192x192",
+      "type": "image/png",
+      "purpose": "maskable"
     },
     {
       "src": "icon-512.png",
       "sizes": "512x512",
       "type": "image/png",
-      "purpose": "any maskable"
+      "purpose": "any"
+    },
+    {
+      "src": "icon-512.png",
+      "sizes": "512x512",
+      "type": "image/png",
+      "purpose": "maskable"
+    }
+  ],
+  "shortcuts": [
+    {
+      "name": "বইয়ের তালিকা",
+      "short_name": "বই",
+      "description": "সব বই দেখুন",
+      "url": "/Diganta-Pathagar/?t=1",
+      "icons": [{ "src": "icon-192.png", "sizes": "192x192" }]
+    },
+    {
+      "name": "বই অনুসন্ধান",
+      "short_name": "অনুসন্ধান",
+      "description": "বই খুঁজুন",
+      "url": "/Diganta-Pathagar/?t=2",
+      "icons": [{ "src": "icon-192.png", "sizes": "192x192" }]
+    }
+  ],
+  "screenshots": [
+    {
+      "src": "icon-512.png",
+      "sizes": "512x512",
+      "type": "image/png",
+      "form_factor": "narrow",
+      "label": "দিগন্ত পাঠাগার হোম স্ক্রিন"
     }
   ]
 }
