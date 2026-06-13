@@ -174,6 +174,10 @@ body{font-family:'Hind Siliguri',sans-serif;background:var(--cream);color:var(--
 .bg-red{background:var(--red-bg);color:var(--red);}.bg-amber{background:#fdf5e0;color:#8a6200;}
 .bg-gray{background:#f0ece4;color:var(--muted);}.bg-orange{background:var(--orange-bg);color:var(--orange);}
 
+/* OVERDUE badge */
+.badge-overdue{background:#fceaea;color:#b03030;border:1px solid rgba(176,48,48,.3);animation:pulse 1.5s infinite;}
+@keyframes pulse{0%,100%{opacity:1}50%{opacity:.6}}
+
 .modal-overlay{position:fixed;inset:0;background:rgba(15,20,40,.55);z-index:200;display:flex;align-items:center;justify-content:center;padding:16px;backdrop-filter:blur(3px);}
 .modal-box{background:var(--cream);border-radius:18px;padding:28px;width:440px;max-width:100%;max-height:90vh;overflow-y:auto;box-shadow:var(--shadow2);}
 .modal-head{display:flex;align-items:center;justify-content:space-between;margin-bottom:22px;}
@@ -182,7 +186,7 @@ body{font-family:'Hind Siliguri',sans-serif;background:var(--cream);color:var(--
 .modal-close:hover{color:var(--red);}
 .modal-foot{display:flex;gap:10px;margin-top:20px;}.modal-foot .btn{flex:1;justify-content:center;}
 
-/* ── SEARCH AUTOCOMPLETE ── */
+/* SEARCH AUTOCOMPLETE */
 .search-wrap{position:relative;flex:1;max-width:400px;}
 .search-icon{position:absolute;left:12px;top:50%;transform:translateY(-50%);color:var(--muted);pointer-events:none;}
 .search-inp{padding-left:36px !important;}
@@ -212,14 +216,15 @@ body{font-family:'Hind Siliguri',sans-serif;background:var(--cream);color:var(--
 .offline-bar{background:#c0392b;color:#fff;text-align:center;padding:7px;font-size:13px;display:none;}
 .offline-bar.show{display:block;}
 
+/* BOOK GRID & CARD */
 .book-grid{display:grid;grid-template-columns:repeat(auto-fill,minmax(175px,1fr));gap:16px;margin-bottom:18px;}
-.book-card{background:#fff;border:1px solid var(--border);border-radius:14px;padding:16px;box-shadow:var(--shadow);cursor:pointer;transition:.15s;}
+.book-card{background:#fff;border:1px solid var(--border);border-radius:14px;padding:16px;box-shadow:var(--shadow);cursor:pointer;transition:.15s;display:flex;flex-direction:column;}
 .book-card:hover{box-shadow:var(--shadow2);transform:translateY(-2px);}
 .book-cover{width:100%;height:120px;background:linear-gradient(135deg,var(--ink2),var(--ink3));border-radius:8px;display:flex;align-items:center;justify-content:center;font-size:30px;margin-bottom:10px;overflow:hidden;}
 .book-cover img{width:100%;height:100%;object-fit:cover;border-radius:8px;display:block;}
 .book-cover-placeholder{font-size:30px;}
-.book-title{font-weight:700;font-size:14px;color:var(--text);margin-bottom:4px;line-height:1.3;}
-.book-author{font-size:12px;color:var(--muted);}
+.book-title{font-weight:700;font-size:14px;color:var(--text);margin-bottom:4px;line-height:1.4;display:-webkit-box;-webkit-line-clamp:2;-webkit-box-orient:vertical;overflow:hidden;}
+.book-author{font-size:12px;color:var(--muted);white-space:nowrap;overflow:hidden;text-overflow:ellipsis;}
 
 .stars{display:flex;gap:2px;}.star{font-size:16px;cursor:pointer;color:#ddd;transition:.1s;}.star.on{color:#f0a500;}
 
@@ -254,7 +259,7 @@ body{font-family:'Hind Siliguri',sans-serif;background:var(--cream);color:var(--
 .logged-user-av{width:40px;height:40px;border-radius:50%;object-fit:cover;border:2px solid var(--gold);}
 .logged-user-av-p{width:40px;height:40px;border-radius:50%;background:var(--ink2);display:flex;align-items:center;justify-content:center;color:var(--gold3);font-size:14px;font-weight:700;border:2px solid var(--gold);}
 
-/* ── NOTICE POPUP ── */
+/* NOTICE POPUP */
 .notice-overlay{position:fixed;inset:0;background:rgba(15,20,40,.65);z-index:500;display:flex;align-items:center;justify-content:center;padding:16px;backdrop-filter:blur(4px);animation:fadeIn .25s ease;}
 @keyframes fadeIn{from{opacity:0}to{opacity:1}}
 .notice-box{background:#fff;border-radius:20px;width:480px;max-width:100%;max-height:85vh;overflow-y:auto;box-shadow:0 16px 60px rgba(0,0,0,.22);border-top:5px solid var(--orange);}
@@ -273,40 +278,58 @@ body{font-family:'Hind Siliguri',sans-serif;background:var(--cream);color:var(--
 .notice-footer{padding:16px 24px;border-top:1px solid var(--border);display:flex;align-items:center;justify-content:space-between;gap:12px;flex-wrap:wrap;}
 .notice-footer-note{font-size:12px;color:var(--lighter);}
 
-/* ── NOTICE ADMIN CARD ── */
+/* NOTICE ADMIN CARD */
 .notice-admin-item{padding:16px;border-radius:12px;background:var(--cream);border:1px solid var(--border);margin-bottom:10px;border-left:4px solid var(--orange);}
 .notice-admin-item.expired{border-left-color:var(--muted);opacity:.65;}
 .notice-admin-title{font-weight:700;font-size:14px;color:var(--text);margin-bottom:4px;}
 .notice-admin-text{font-size:13px;color:var(--muted);margin-bottom:8px;white-space:pre-wrap;line-height:1.6;}
 .notice-admin-meta{font-size:11px;color:var(--lighter);display:flex;gap:12px;flex-wrap:wrap;margin-bottom:8px;}
 
-/* ── NOTICE BELL ── */
+/* NOTICE BELL */
 .notice-bell-btn{background:none;border:none;cursor:pointer;position:relative;padding:4px;display:flex;align-items:center;}
 .notice-bell-btn svg{width:22px;height:22px;color:rgba(255,255,255,.65);}
 .notice-bell-btn:hover svg{color:var(--gold3);}
 .notice-bell-dot{position:absolute;top:2px;right:2px;width:9px;height:9px;border-radius:50%;background:var(--orange);border:2px solid var(--ink2);display:none;}
 .notice-bell-dot.show{display:block;}
 
-/* ── NOTIF PERMISSION BANNER ── */
+/* NOTIF PERMISSION BANNER */
 .notif-banner{background:var(--orange-bg);border:1px solid rgba(201,106,16,.25);border-radius:10px;padding:12px 16px;margin-bottom:14px;display:flex;align-items:center;gap:12px;flex-wrap:wrap;}
 .notif-banner p{font-size:13px;color:var(--orange);flex:1;}
 
-/* ── STAT PANEL (clickable) ── */
+/* STAT PANEL */
 .stat-panel-overlay{position:fixed;inset:0;background:rgba(15,20,40,.5);z-index:150;display:flex;align-items:flex-start;justify-content:center;padding:60px 16px 16px;backdrop-filter:blur(3px);animation:fadeIn .2s ease;}
 .stat-panel{background:#fff;border-radius:18px;width:680px;max-width:100%;max-height:80vh;overflow-y:auto;box-shadow:var(--shadow2);}
 .stat-panel-head{padding:20px 24px;border-bottom:1px solid var(--border);display:flex;align-items:center;justify-content:space-between;position:sticky;top:0;background:#fff;border-radius:18px 18px 0 0;z-index:1;}
 .stat-panel-title{font-size:16px;font-weight:700;color:var(--text);}
 .stat-panel-body{padding:20px 24px;}
 
-/* ── MEMBER CARD (Admin) — clickable ── */
+/* MEMBER CARD */
 .member-card{background:#fff;border:1px solid var(--border);border-radius:14px;padding:16px 18px;margin-bottom:12px;box-shadow:var(--shadow);cursor:pointer;transition:.15s;}
 .member-card:hover{box-shadow:var(--shadow2);transform:translateY(-1px);}
 .member-card-preview{display:flex;align-items:flex-start;justify-content:space-between;gap:10px;}
 
-/* ── COMPLAINT IDENTITY ── */
+/* COMPLAINT IDENTITY */
 .identity-toggle{display:flex;border:1.5px solid var(--border);border-radius:10px;overflow:hidden;margin-bottom:14px;}
 .id-btn{flex:1;padding:10px;font-family:'Hind Siliguri',sans-serif;font-size:13px;font-weight:600;cursor:pointer;border:none;background:transparent;color:var(--muted);transition:.15s;}
 .id-btn.on{background:var(--ink2);color:#fff;}
+
+/* SORT/FILTER BAR */
+.filter-bar{display:flex;gap:8px;flex-wrap:wrap;margin-bottom:14px;align-items:center;}
+.filter-chip{padding:5px 14px;border-radius:20px;font-size:12px;font-weight:600;cursor:pointer;border:1.5px solid var(--border);background:#fff;color:var(--muted);transition:.15s;font-family:'Hind Siliguri',sans-serif;}
+.filter-chip.on{background:var(--ink2);color:var(--cream);border-color:var(--ink2);}
+.filter-chip:hover:not(.on){background:var(--cream2);}
+
+/* CHART */
+.chart-wrap{position:relative;width:100%;height:180px;margin-top:8px;}
+.chart-bar-row{display:flex;align-items:flex-end;justify-content:space-around;height:140px;gap:4px;padding:0 4px;}
+.chart-bar-col{display:flex;flex-direction:column;align-items:center;gap:4px;flex:1;}
+.chart-bar{width:100%;border-radius:6px 6px 0 0;min-height:4px;transition:height .4s ease;background:linear-gradient(180deg,var(--blue),var(--ink3));}
+.chart-bar:hover{background:linear-gradient(180deg,var(--gold),var(--gold2));}
+.chart-label{font-size:10px;color:var(--muted);text-align:center;white-space:nowrap;}
+.chart-val{font-size:10px;font-weight:700;color:var(--text);}
+
+/* SECURITY INFO BOX */
+.security-info{background:var(--green-bg);border:1px solid rgba(45,122,82,.2);border-radius:10px;padding:14px;margin-bottom:14px;font-size:13px;color:var(--green);line-height:1.6;}
 </style>
 </head>
 <body>
@@ -317,19 +340,22 @@ body{font-family:'Hind Siliguri',sans-serif;background:var(--cream);color:var(--
 <div class="toast-wrap" id="toasts"></div>
 
 <script>
-// ── CONFIG ──
-const ADMIN_EMAILS = [
-  "alvek039@gmail.com",
-  "mylifeisnomore123@gmail.com",
-  "digantapathagar@gmail.com",
-  "asadulislamcom386@gmail.com",
-];
-const FCM_VAPID_KEY = "BFGhysU51a7yVZzFTX9Mp8dF35FrrRn494z6snoik4KNz6r_PvAE2vcAeMZZdvsfjhrDsUykT0GbEVHh1Hgv6VI";
+// ══════════════════════════════════════════════
+// CONFIG
+// ══════════════════════════════════════════════
+// ✅ SECURITY: ADMIN_EMAILS এখন Firebase থেকে লোড হয়
+// Firebase Console > Realtime Database > adminEmails তে যোগ করুন:
+// { "alvek039@gmail.com": true, "digantapathagar@gmail.com": true }
+let ADMIN_EMAILS_FROM_FB = {};
 
+const FCM_VAPID_KEY = "BFGhysU51a7yVZzFTX9Mp8dF35FrrRn494z6snoik4KNz6r_PvAE2vcAeMZZdvsfjhrDsUykT0GbEVHh1Hgv6VI";
 const CATS=["উপন্যাস","ছোটগল্প","কবিতা","নাটক","সায়েন্স ফিকশন","জীবনী","ইতিহাস","ধর্মীয়","প্রবন্ধ","শিশুসাহিত্য","বিজ্ঞান","অন্যান্য"];
 const LOGO_SVG=`<svg viewBox="0 0 36 36" fill="none" xmlns="http://www.w3.org/2000/svg"><rect x="3" y="26" width="30" height="4" rx="2" fill="#c9a84c"/><path d="M18 10 Q11 6 5 8 L5 22 Q11 20 18 24 Q25 20 31 22 L31 8 Q25 6 18 10Z" stroke="#c9a84c" stroke-width="1.4" fill="rgba(201,168,76,0.08)"/><line x1="18" y1="10" x2="18" y2="24" stroke="#c9a84c" stroke-width="1"/><circle cx="18" cy="8" r="2" fill="#c9a84c" opacity=".5"/></svg>`;
 const GOOGLE_SVG=`<svg width="18" height="18" viewBox="0 0 48 48"><path fill="#EA4335" d="M24 9.5c3.54 0 6.71 1.22 9.21 3.6l6.85-6.85C35.9 2.38 30.47 0 24 0S6.51 5.38 2.56 13.22l7.98 6.19C12.43 13.72 17.74 9.5 24 9.5z"/><path fill="#4285F4" d="M46.98 24.55c0-1.57-.15-3.09-.38-4.55H24v9.02h12.94c-.58 2.96-2.26 5.48-4.78 7.18l7.73 6c4.51-4.18 7.09-10.36 7.09-17.65z"/><path fill="#FBBC05" d="M10.53 28.59c-.48-1.45-.76-2.99-.76-4.59s.27-3.14.76-4.59l-7.98-6.19C.92 16.46 0 20.12 0 24c0 3.88.92 7.54 2.56 10.78l7.97-6.19z"/><path fill="#34A853" d="M24 48c6.48 0 11.93-2.13 15.89-5.81l-7.73-6c-2.18 1.48-4.97 2.36-8.16 2.36-6.26 0-11.57-4.22-13.47-9.91l-7.98 6.19C6.51 42.62 14.62 48 24 48z"/></svg>`;
 
+// ══════════════════════════════════════════════
+// STATE
+// ══════════════════════════════════════════════
 let S={
   screen:'loading',role:'guest',tab:0,user:null,
   books:{},members:{},borrows:{},passes:[],complaints:{},reviews:{},discussions:{},
@@ -337,6 +363,7 @@ let S={
   modal:null,form:{},
   borrow:{bookId:'',bookTitle:'',memberId:'',memberName:'',bookQuery:'',memberQuery:''},
   search:'',searchCat:'',
+  bookFilter:'all', // 'all' | 'available' | 'sort-rating' | 'sort-new'
   ui:{dropBook:false,dropMember:false,searchSugg:false},
   showAdminLogin:false,adminPwInput:'',
   syncLive:false,logoTapCount:0,logoTapTimer:null,
@@ -346,9 +373,30 @@ let S={
   myReadlist:{},myFavs:{},
   noticeShownThisSession:false,
   fcmToken:null,notifPermission:'default',
-  statPanel:null, // 'books','members','borrowed','available'
-  selectedMember:null, // for admin member detail
+  statPanel:null,
+  selectedMember:null,
+  adminEmailsLoaded:false,
 };
+
+// ══════════════════════════════════════════════
+// ✅ SECURITY: SHA-256 hashing
+// Password টা hash করে Firebase এ তুলনা করা হয়
+// ══════════════════════════════════════════════
+async function sha256(message) {
+  const msgBuffer = new TextEncoder().encode(message);
+  const hashBuffer = await crypto.subtle.digest('SHA-256', msgBuffer);
+  const hashArray = Array.from(new Uint8Array(hashBuffer));
+  return hashArray.map(b => b.toString(16).padStart(2, '0')).join('');
+}
+
+// ══════════════════════════════════════════════
+// ✅ SECURITY: isAdminEmail এখন Firebase থেকে চেক করে
+// ══════════════════════════════════════════════
+function isAdminEmail(email) {
+  if (!email) return false;
+  const key = email.toLowerCase().trim().replace(/\./g,'_').replace(/@/g,'__at__');
+  return !!ADMIN_EMAILS_FROM_FB[key];
+}
 
 function getTabList(){
   const isAdmin=S.role==='admin';
@@ -369,10 +417,6 @@ function fbSet(p,v){const{db,ref,set}=fb();return set(ref(db,p),v);}
 function fbListen(p,cb){const{db,ref,onValue}=fb();return onValue(ref(db,p),snap=>{cb(snap.exists()?snap.val():null);});}
 function safeKey(uid){return uid.replace(/[.#$\[\]]/g,'_');}
 function tryRender(){if(S.screen==='app')render();}
-function isAdminEmail(email){
-  if(!email)return false;
-  return ADMIN_EMAILS.map(e=>e.toLowerCase().trim()).includes(email.toLowerCase().trim());
-}
 
 function fixImgUrl(url){
   if(!url||!url.trim())return'';
@@ -386,7 +430,68 @@ function fixImgUrl(url){
   return url;
 }
 
-// ── NOTICE HELPERS ──
+// ══════════════════════════════════════════════
+// OVERDUE CHECK
+// ══════════════════════════════════════════════
+function isOverdue(borrow) {
+  if (!borrow.dueDate || borrow.ret) return false;
+  // parse Bengali date stored as string — fallback: compare issuedAt_ts if available
+  if (borrow.dueDate_ts) return Date.now() > borrow.dueDate_ts;
+  return false;
+}
+function dueDateTs(days) {
+  const d = new Date();
+  d.setDate(d.getDate() + days);
+  return d.getTime();
+}
+
+// ══════════════════════════════════════════════
+// CHART DATA
+// ══════════════════════════════════════════════
+function getMonthlyBorrowData() {
+  const months = [];
+  const now = new Date();
+  for (let i = 5; i >= 0; i--) {
+    const d = new Date(now.getFullYear(), now.getMonth() - i, 1);
+    months.push({
+      label: d.toLocaleDateString('bn-BD', { month: 'short' }),
+      year: d.getFullYear(),
+      month: d.getMonth(),
+      count: 0
+    });
+  }
+  Object.values(S.borrows).forEach(b => {
+    if (!b.issuedAt_ts) return;
+    const d = new Date(b.issuedAt_ts);
+    const slot = months.find(m => m.year === d.getFullYear() && m.month === d.getMonth());
+    if (slot) slot.count++;
+  });
+  return months;
+}
+
+function renderChart() {
+  const data = getMonthlyBorrowData();
+  const max = Math.max(...data.map(d => d.count), 1);
+  const bars = data.map(d => {
+    const pct = Math.round((d.count / max) * 100);
+    return `<div class="chart-bar-col">
+      <div class="chart-val">${d.count||''}</div>
+      <div class="chart-bar" style="height:${Math.max(pct,3)}%" title="${d.count} টি ধার"></div>
+      <div class="chart-label">${d.label}</div>
+    </div>`;
+  }).join('');
+  return `<div class="card">
+    <div class="card-title">📊 মাসিক ধার (শেষ ৬ মাস)</div>
+    <div class="chart-wrap">
+      <div class="chart-bar-row" style="height:140px">${bars}</div>
+    </div>
+    <div style="font-size:11px;color:var(--muted);margin-top:6px;text-align:center">* শুধুমাত্র timestamp সহ রেকর্ড গণনা হয়</div>
+  </div>`;
+}
+
+// ══════════════════════════════════════════════
+// NOTICE HELPERS
+// ══════════════════════════════════════════════
 function noticesArr(){
   return Object.entries(S.notices||{}).map(([id,v])=>({id,...v})).sort((a,b)=>b.createdAt_ts-a.createdAt_ts);
 }
@@ -441,15 +546,11 @@ window.closeNoticePopup=function(){
   render();
 };
 
-// ── STAT PANEL ──
-window.openStatPanel=function(type){
-  S.statPanel=type;
-  renderStatPanel();
-};
-window.closeStatPanel=function(){
-  S.statPanel=null;
-  document.getElementById('stat-panel').innerHTML='';
-};
+// ══════════════════════════════════════════════
+// STAT PANEL
+// ══════════════════════════════════════════════
+window.openStatPanel=function(type){S.statPanel=type;renderStatPanel();};
+window.closeStatPanel=function(){S.statPanel=null;document.getElementById('stat-panel').innerHTML='';};
 
 function renderStatPanel(){
   const type=S.statPanel;
@@ -488,12 +589,13 @@ function renderStatPanel(){
   } else if(type==='borrowed'){
     const pend=borrowsArr().filter(b=>!b.ret);
     title='⏳ ধারে আছে ('+pend.length+')';
-    content=pend.length?pend.map(b=>`
-      <div style="padding:12px;border-radius:10px;background:var(--blue-bg);border:1px solid rgba(42,95,158,.15);margin-bottom:8px">
-        <div style="font-weight:700;font-size:14px">${esc(b.bookTitle)}</div>
+    content=pend.length?pend.map(b=>{
+      const od=isOverdue(b);
+      return`<div style="padding:12px;border-radius:10px;background:${od?'var(--red-bg)':'var(--blue-bg)'};border:1px solid ${od?'rgba(176,48,48,.2)':'rgba(42,95,158,.15)'};margin-bottom:8px">
+        <div style="font-weight:700;font-size:14px">${esc(b.bookTitle)} ${od?'<span class="badge-overdue badge">মেয়াদ শেষ!</span>':''}</div>
         <div style="font-size:12px;color:var(--muted);margin-top:2px">✍️ ${esc(S.books[b.bookId]?.author||'অজানা লেখক')}</div>
         <div style="font-size:12px;color:var(--muted);margin-top:4px">📅 ইস্যু: ${esc(b.issuedAt)} &nbsp;|&nbsp; ফেরত: ${esc(b.dueDate||'—')}</div>
-      </div>`).join('')
+      </div>`;}).join('')
       :'<div class="empty">কোনো বই ধারে নেই</div>';
   } else if(type==='available'){
     const avail=booksArr().filter(b=>b.avail>0);
@@ -511,7 +613,6 @@ function renderStatPanel(){
       </div>`).join('')
       :'<div class="empty">কোনো বই পাওয়া যাচ্ছে না</div>';
   }
-
   document.getElementById('stat-panel').innerHTML=`
   <div class="stat-panel-overlay" onclick="if(event.target===this)closeStatPanel()">
     <div class="stat-panel">
@@ -524,18 +625,16 @@ function renderStatPanel(){
   </div>`;
 }
 
-// ── PUSH NOTIFICATION (FCM) ──
+// ══════════════════════════════════════════════
+// PUSH NOTIFICATION (FCM)
+// ══════════════════════════════════════════════
 async function requestNotifPermission(){
   if(!('Notification' in window))return toast('এই ব্রাউজারে নোটিফিকেশন সাপোর্ট নেই','err');
   try{
     const perm=await Notification.requestPermission();
     S.notifPermission=perm;
-    if(perm==='granted'){
-      await setupFCM();
-      toast('নোটিফিকেশন চালু হয়েছে ✓');
-    }else{
-      toast('নোটিফিকেশন অনুমতি দেওয়া হয়নি','err');
-    }
+    if(perm==='granted'){await setupFCM();toast('নোটিফিকেশন চালু হয়েছে ✓');}
+    else toast('নোটিফিকেশন অনুমতি দেওয়া হয়নি','err');
     render();
   }catch(e){toast('নোটিফিকেশন সেটআপ ব্যর্থ','err');}
 }
@@ -545,9 +644,7 @@ async function setupFCM(){
   try{
     const token=await window._fbGetToken(messaging,{vapidKey:FCM_VAPID_KEY,serviceWorkerRegistration:await navigator.serviceWorker.ready});
     S.fcmToken=token;
-    if(S.user){
-      fbSet('fcmTokens/'+safeKey(S.user.uid),{token,updatedAt:nowDate(),userName:S.user.displayName||''});
-    }
+    if(S.user){fbSet('fcmTokens/'+safeKey(S.user.uid),{token,updatedAt:nowDate(),userName:S.user.displayName||''});}
     window._fbOnMessage(messaging,payload=>{
       const n=payload.notification||{};
       toast((n.title||'নোটিশ')+': '+(n.body||''),'ok');
@@ -556,12 +653,12 @@ async function setupFCM(){
   }catch(e){console.warn('FCM token error',e);}
 }
 function sendBrowserNotification(title,body){
-  if(Notification.permission==='granted'){
-    try{new Notification(title,{body,icon:'icon-192.png'});}catch(e){}
-  }
+  if(Notification.permission==='granted'){try{new Notification(title,{body,icon:'icon-192.png'});}catch(e){}}
 }
 
-// ── NOTICE CRUD ──
+// ══════════════════════════════════════════════
+// NOTICE CRUD
+// ══════════════════════════════════════════════
 function saveNotice(){
   const{noticeTitle,noticeBody,noticeExpiry}=S.form;
   if(!(noticeTitle||'').trim())return toast('নোটিশের শিরোনাম দিন','err');
@@ -569,25 +666,15 @@ function saveNotice(){
   const now=Date.now();
   let expiry_ts=null;
   if(noticeExpiry){expiry_ts=new Date(noticeExpiry).setHours(23,59,59,999);}
-  const data={
-    title:noticeTitle.trim(),
-    body:noticeBody.trim(),
-    expiryDate:noticeExpiry||null,
-    expiry_ts,
-    createdAt:nowDate(),
-    createdAt_ts:now
-  };
+  const data={title:noticeTitle.trim(),body:noticeBody.trim(),expiryDate:noticeExpiry||null,expiry_ts,createdAt:nowDate(),createdAt_ts:now};
   if(S.form.noticeEditId){
-    fbUpdate('notices/'+S.form.noticeEditId,data).then(()=>{
-      S.modal=null;S.form={};toast('নোটিশ আপডেট হয়েছে');render();
-    });
+    fbUpdate('notices/'+S.form.noticeEditId,data).then(()=>{S.modal=null;S.form={};toast('নোটিশ আপডেট হয়েছে');render();});
   }else{
     fbPush('notices',data).then(()=>{
       S.modal=null;S.form={};
       toast('নোটিশ প্রকাশিত হয়েছে ✓');
       sendBrowserNotification(noticeTitle.trim(),noticeBody.trim().substring(0,80));
-      S.noticeShownThisSession=false;
-      render();
+      S.noticeShownThisSession=false;render();
     });
   }
 }
@@ -601,6 +688,9 @@ function deleteNotice(id){
   fbRemove('notices/'+id).then(()=>toast('নোটিশ মুছে গেছে'));
 }
 
+// ══════════════════════════════════════════════
+// INIT LISTENERS
+// ══════════════════════════════════════════════
 function initListeners(){
   fbListen('books',v=>{S.books=v||{};tryRender();});
   fbListen('members',v=>{S.members=v||{};tryRender();});
@@ -611,14 +701,24 @@ function initListeners(){
   fbListen('onlineUsers',v=>{S.onlineUsers=v||{};tryRender();});
   fbListen('notices',v=>{
     S.notices=v||{};
-    if(S.screen==='app'&&!S.noticeShownThisSession){
-      setTimeout(()=>showNoticePopup(),400);
+    if(S.screen==='app'&&!S.noticeShownThisSession){setTimeout(()=>showNoticePopup(),400);}
+    tryRender();
+  });
+
+  // ✅ SECURITY: adminEmails Firebase থেকে লোড
+  fbListen('adminEmails', v => {
+    ADMIN_EMAILS_FROM_FB = v || {};
+    S.adminEmailsLoaded = true;
+    // Re-check current user's role after loading
+    if (S.user && isAdminEmail(S.user.email)) {
+      S.role = 'admin';
     }
     tryRender();
   });
+
   fbListen('passes',v=>{
     if(v){S.passes=typeof v==='object'?Object.values(v):v;}
-    else{fbSet('passes',{p0:'diganta2025'});S.passes=['diganta2025'];}
+    else{fbSet('passes',{p0: _defaultPassHash()});S.passes=[];}
     if(S.screen==='loading'){S.screen='app';render();setTimeout(()=>showNoticePopup(),600);}
     else tryRender();
   });
@@ -648,6 +748,9 @@ function initListeners(){
     tryRender();
   });
 }
+
+// Default pass hash placeholder (admin must set hashed passes in Firebase)
+function _defaultPassHash(){return'diganta2025';}
 
 function toast(msg,type='ok'){
   const w=document.getElementById('toasts');
@@ -701,12 +804,30 @@ function handleLogoTap(){
 document.addEventListener('keydown',e=>{if(e.ctrlKey&&e.shiftKey&&e.key==='A'){e.preventDefault();openAdminLogin();}});
 function openAdminLogin(){if(S.role==='admin')return;S.showAdminLogin=true;S.adminPwInput='';render();setTimeout(()=>{const f=document.getElementById('adminPwField');if(f)f.focus();},100);}
 function closeAdminLogin(){S.showAdminLogin=false;S.adminPwInput='';render();}
-function tryAdminLogin(){
+
+// ✅ SECURITY: Password hash দিয়ে চেক
+async function tryAdminLogin(){
   const pw=S.adminPwInput.trim();
   if(!pw)return toast('পাসওয়ার্ড দিন','err');
-  if(S.passes.includes(pw)){S.role='admin';S.showAdminLogin=false;S.adminPwInput='';toast('অ্যাডমিন মোড ✓');render();}
-  else toast('ভুল পাসওয়ার্ড!','err');
+  const hashed = await sha256(pw);
+  // Firebase-এ hashed passwords আছে কিনা চেক করো
+  // passes array তে plain বা hashed দুটোই সাপোর্ট করা হচ্ছে (backward compat)
+  if(S.passes.includes(pw) || S.passes.includes(hashed)){
+    S.role='admin';S.showAdminLogin=false;S.adminPwInput='';toast('অ্যাডমিন মোড ✓');render();
+  } else {
+    toast('ভুল পাসওয়ার্ড!','err');
+  }
 }
+
+// ✅ SECURITY: নতুন pass save করার সময় hash করে সেভ করে
+async function addPass(){
+  const pw=(S.form.newPass||'').trim();
+  if(pw.length<6)return toast('কমপক্ষে ৬ অক্ষর','err');
+  const hashed = await sha256(pw);
+  if(S.passes.includes(pw)||S.passes.includes(hashed))return toast('আগেই আছে','err');
+  fbPush('passes',hashed).then(()=>{S.form.newPass='';toast('পাসওয়ার্ড যোগ হয়েছে (হ্যাশ করা)');render();});
+}
+
 function adminExitMode(){
   if(S.user&&isAdminEmail(S.user.email)){logout();return;}
   S.role=S.user?'user':'guest';S.tab=0;toast('অ্যাডমিন মোড বন্ধ');render();
@@ -725,7 +846,7 @@ function saveBook(){
   }else{
     const dup=Object.values(S.books).find(b=>b.title.trim().toLowerCase()===title.trim().toLowerCase());
     if(dup&&!confirm('"'+title+'" নামে বই আগেই আছে!\nআবারও যোগ করবেন?'))return;
-    fbPush('books',{title,author:author||'অজানা লেখক',cat,total:tot,avail:tot,isbn:isbn||'',shelf:shelf||'',cover,addedAt:nowDate()})
+    fbPush('books',{title,author:author||'অজানা লেখক',cat,total:tot,avail:tot,isbn:isbn||'',shelf:shelf||'',cover,addedAt:nowDate(),addedAt_ts:Date.now()})
       .then(()=>{S.modal=null;S.form={};toast('বই যোগ হয়েছে');render();});
   }
 }
@@ -761,10 +882,13 @@ function issueBorrow(){
   const bk=S.books[S.borrow.bookId];
   if(!bk||bk.avail<1)return toast('পাওয়া যাচ্ছে না','err');
   const dueDays=parseInt(document.getElementById('dueDays')?.value)||14;
+  const dueTs = dueDateTs(dueDays);
   fbPush('borrows',{
     bookId:S.borrow.bookId,bookTitle:S.borrow.bookTitle,
     memberId:S.borrow.memberId,memberName:S.borrow.memberName,
-    issuedAt:nowDate(),dueDate:futureDate(dueDays),ret:false,returnedAt:null
+    issuedAt:nowDate(),issuedAt_ts:Date.now(),
+    dueDate:futureDate(dueDays),dueDate_ts:dueTs,
+    ret:false,returnedAt:null
   }).then(()=>{
     fbUpdate('books/'+S.borrow.bookId,{avail:bk.avail-1});
     S.borrow={bookId:'',bookTitle:'',memberId:'',memberName:'',bookQuery:'',memberQuery:''};
@@ -825,18 +949,11 @@ function submitComplaint(){
     data.senderName=S.user.displayName||'অজানা';
     data.senderEmail=S.user.email||'';
   }
-  fbPush('complaints',data)
-    .then(()=>{S.complaintText='';toast('পাঠানো হয়েছে ✓');render();});
+  fbPush('complaints',data).then(()=>{S.complaintText='';toast('পাঠানো হয়েছে ✓');render();});
 }
 function markComplaintRead(id){fbUpdate('complaints/'+id,{read:true});}
 function deleteComplaint(id){if(!confirm('মুছে দেবেন?'))return;fbRemove('complaints/'+id).then(()=>toast('মুছে গেছে'));}
 
-function addPass(){
-  const pw=(S.form.newPass||'').trim();
-  if(pw.length<6)return toast('কমপক্ষে ৬ অক্ষর','err');
-  if(S.passes.includes(pw))return toast('আগেই আছে','err');
-  fbPush('passes',pw).then(()=>{S.form.newPass='';toast('যোগ হয়েছে');render();});
-}
 function removePass(pw){
   if(S.passes.length<=1)return toast('অন্তত একটি রাখতে হবে','err');
   const{db,ref,onValue,remove:fbRem}=fb();
@@ -848,13 +965,27 @@ function removePass(pw){
   },{onlyOnce:true});
 }
 
+// ✅ SECURITY: Admin email যোগ করতে Firebase-এ সেভ করে
+function addAdminEmail(){
+  const email=(S.form.newAdminEmail||'').trim().toLowerCase();
+  if(!email||!email.includes('@'))return toast('সঠিক ইমেইল দিন','err');
+  const key=email.replace(/\./g,'_').replace(/@/g,'__at__');
+  fbSet('adminEmails/'+key, true).then(()=>{
+    S.form.newAdminEmail='';toast('Admin ইমেইল যোগ হয়েছে ✓');render();
+  });
+}
+function removeAdminEmail(key){
+  if(!confirm('এই admin email মুছবেন?'))return;
+  fbRemove('adminEmails/'+key).then(()=>toast('মুছে গেছে'));
+}
+
 function nowDate(){return new Date().toLocaleDateString('bn-BD',{day:'numeric',month:'long',year:'numeric'});}
 function futureDate(days){const d=new Date();d.setDate(d.getDate()+days);return d.toLocaleDateString('bn-BD',{day:'numeric',month:'long',year:'numeric'});}
 function memberBorrowCount(mId){return Object.values(S.borrows).filter(b=>b.memberId===mId&&!b.ret).length;}
 function booksArr(){return Object.entries(S.books).map(([id,v])=>({id,...v}));}
 function membersArr(){return Object.entries(S.members).map(([id,v])=>({id,...v}));}
 function borrowsArr(){return Object.entries(S.borrows).map(([id,v])=>({id,...v}));}
-function esc(s){if(!s)return'';return String(s).replace(/&/g,'&amp;').replace(/</g,'&lt;').replace(/>/g,'&gt;').replace(/"/g,'&quot;').replace(/'/g,'&#39;');}
+function esc(s){if(!s)return'';return String(s).replace(/&/g,'&amp;').replace(/</g,'&lt;').replace(/>/g,'&gt;').replace(/"/g,'&quot;').replace(/'/g,'&#x27;');}
 function starsHTML(rating,interactive){
   let h='<div class="stars">';
   for(let i=1;i<=5;i++){
@@ -875,16 +1006,27 @@ function bookCoverHTML(b,height){
   return'<div class="book-cover" style="height:'+height+'px"><span class="book-cover-placeholder">📖</span></div>';
 }
 
-// ── Search suggestions ──
+// ══════════════════════════════════════════════
+// DEBOUNCED SEARCH
+// ══════════════════════════════════════════════
+let _searchDebTimer = null;
+function debounceSearch(val) {
+  clearTimeout(_searchDebTimer);
+  _searchDebTimer = setTimeout(() => {
+    S.search = val;
+    renderSearchSuggestions();
+  }, 220);
+}
+
 function getSearchSuggestions(q){
   if(!q||q.length<1)return[];
   const lq=q.toLowerCase();
-  return booksArr()
-    .filter(b=>(b.title+b.author+b.cat).toLowerCase().includes(lq))
-    .slice(0,8);
+  return booksArr().filter(b=>(b.title+b.author+b.cat).toLowerCase().includes(lq)).slice(0,8);
 }
 
-// ── RENDER ──
+// ══════════════════════════════════════════════
+// RENDER
+// ══════════════════════════════════════════════
 let _scrollY=0,_tabSwitched=false;
 function render(){
   _scrollY=window.scrollY;
@@ -927,6 +1069,7 @@ function attachEvents(){
     if(a==='saveMember')el.onclick=saveMember;
     if(a==='issueBorrow')el.onclick=issueBorrow;
     if(a==='addPass')el.onclick=addPass;
+    if(a==='addAdminEmail')el.onclick=addAdminEmail;
     if(a==='submitReview')el.onclick=submitReview;
     if(a==='submitComment')el.onclick=submitComment;
     if(a==='submitComplaint')el.onclick=submitComplaint;
@@ -950,6 +1093,7 @@ function attachEvents(){
     if(a.startsWith('delMember:')){el.onclick=()=>deleteMember(a.split(':')[1]);}
     if(a.startsWith('editMember:')){el.onclick=()=>editMember(a.split(':')[1]);}
     if(a.startsWith('delPass:')){el.onclick=()=>removePass(decodeURIComponent(a.split(':')[1]));}
+    if(a.startsWith('delAdminEmail:')){el.onclick=()=>removeAdminEmail(a.split(':')[1]);}
     if(a.startsWith('markRead:')){el.onclick=()=>markComplaintRead(a.split(':')[1]);}
     if(a.startsWith('delComplaint:')){el.onclick=()=>deleteComplaint(a.split(':')[1]);}
     if(a.startsWith('editNotice:')){el.onclick=()=>editNotice(a.split(':')[1]);}
@@ -963,16 +1107,18 @@ function attachEvents(){
     };}
     if(a.startsWith('openMemberDetail:')){el.onclick=()=>{
       const id=a.split(':')[1];
-      S.selectedMember={id,...S.members[id]};
-      render();
+      S.selectedMember={id,...S.members[id]};render();
     };}
     if(a.startsWith('toggleReadlist:')){el.onclick=()=>toggleReadlist(a.split(':')[1]);}
     if(a.startsWith('toggleFav:')){el.onclick=()=>toggleFav(a.split(':')[1]);}
     if(a==='authTabLogin'){el.onclick=()=>{S.authTab='login';S.authForm={};render();};}
     if(a==='authTabRegister'){el.onclick=()=>{S.authTab='register';S.authForm={};render();};}
     if(a.startsWith('statPanel:')){el.onclick=()=>openStatPanel(a.split(':')[1]);}
+    if(a.startsWith('setFilter:')){el.onclick=()=>{S.bookFilter=a.split(':')[1];render();};}
   });
+
   document.querySelectorAll('[data-star]').forEach(el=>{el.onclick=()=>{S.newRating=parseInt(el.dataset.star);render();};});
+
   const bind=(sel,fn)=>{const el=document.querySelector(sel);if(el)el.oninput=fn;};
   bind('#adminPwField',e=>{S.adminPwInput=e.target.value;});
   bind('#fTitle',e=>{S.form.title=e.target.value;});
@@ -996,6 +1142,7 @@ function attachEvents(){
   bind('#fMemberEmail',e=>{S.form.email=e.target.value;});
   bind('#fJoinedAt',e=>{S.form.joinedAt=e.target.value;});
   bind('#fNewPass',e=>{S.form.newPass=e.target.value;});
+  bind('#fNewAdminEmail',e=>{S.form.newAdminEmail=e.target.value;});
   bind('#authName',e=>{S.authForm.name=e.target.value;});
   bind('#authEmail',e=>{S.authForm.email=e.target.value;});
   bind('#authPassword',e=>{S.authForm.password=e.target.value;});
@@ -1007,16 +1154,15 @@ function attachEvents(){
   bind('#fNoticeBody',e=>{S.form.noticeBody=e.target.value;});
   bind('#fNoticeExpiry',e=>{S.form.noticeExpiry=e.target.value;});
 
-  // ── Global search with live suggestions ──
+  // ✅ DEBOUNCED global search
   const gsEl=document.getElementById('globalSearch');
   if(gsEl){
     gsEl.oninput=e=>{
-      S.search=e.target.value;
       S.ui.searchSugg=true;
-      renderSearchSuggestions();
+      debounceSearch(e.target.value);
     };
     gsEl.onfocus=()=>{S.ui.searchSugg=true;renderSearchSuggestions();};
-    gsEl.onblur=e=>{setTimeout(()=>{S.ui.searchSugg=false;const box=document.getElementById('searchSuggBox');if(box)box.remove();S.search=e.target.value;},200);};
+    gsEl.onblur=e=>{setTimeout(()=>{S.ui.searchSugg=false;const box=document.getElementById('searchSuggBox');if(box)box.remove();S.search=gsEl.value;},200);};
   }
 
   bind('#bkQuery',e=>{S.borrow.bookQuery=e.target.value;S.ui.dropBook=true;if(!e.target.value){S.borrow.bookId='';S.borrow.bookTitle='';}render();});
@@ -1063,6 +1209,9 @@ window.selectSuggBook=function(id){
   window.scrollTo(0,0);render();
 };
 
+// ══════════════════════════════════════════════
+// APP RENDER
+// ══════════════════════════════════════════════
 function renderApp(){
   const isAdmin=S.role==='admin';
   const isUser=S.role==='user'||isAdmin;
@@ -1106,23 +1255,54 @@ function renderAdminOverlay(){
   return'<div class="modal-overlay" onclick="if(event.target===this)closeAdminLogin()"><div class="modal-box"><div class="modal-head"><span class="modal-title">অ্যাডমিন লগইন</span><button class="modal-close" data-action="closeAdminLogin">✕</button></div><input id="adminPwField" class="inp" type="password" placeholder="পাসওয়ার্ড লিখুন..."><button class="btn btn-dark" style="width:100%;justify-content:center;margin-bottom:8px" data-action="tryAdminLogin">লগইন করুন →</button><button class="btn btn-ghost" style="width:100%;justify-content:center" data-action="closeAdminLogin">বাতিল</button><div style="font-size:11px;color:var(--lighter);text-align:center;margin-top:12px">🔒 Logo তে ৩ বার ট্যাপ বা Ctrl+Shift+A</div></div></div>';
 }
 
+// ══════════════════════════════════════════════
+// DASHBOARD
+// ══════════════════════════════════════════════
 function renderDash(){
   const books=booksArr(),borrows=borrowsArr();
-  const pending=borrows.filter(b=>!b.ret).length;
+  const pending=borrows.filter(b=>!b.ret);
+  const overdueCnt=pending.filter(b=>isOverdue(b)).length;
   const availCount=books.reduce((a,b)=>a+b.avail,0);
   const recent=borrows.slice(-6).reverse();
   const topBooks=booksArr().filter(b=>avgRating(b.id)>0).sort((a,b)=>avgRating(b.id)-avgRating(a.id)).slice(0,4);
   const activeN=activeNotices();
   const noticeBanner=activeN.length?`<div class="card" style="border-left:4px solid var(--orange);cursor:pointer" data-action="showNoticePopup"><div style="display:flex;align-items:center;gap:12px"><div style="font-size:24px">📢</div><div><div style="font-weight:700;font-size:15px;color:var(--orange)">${activeN.length}টি সক্রিয় নোটিশ আছে</div><div style="font-size:13px;color:var(--muted);margin-top:2px">ক্লিক করে দেখুন</div></div></div></div>`:'';
-  return noticeBanner+
-    '<div class="stats">'
+  const overdueBanner=overdueCnt>0?`<div class="card" style="border-left:4px solid var(--red);background:var(--red-bg)"><div style="display:flex;align-items:center;gap:12px"><div style="font-size:24px">⚠️</div><div><div style="font-weight:700;font-size:15px;color:var(--red)">${overdueCnt}টি বই মেয়াদোত্তীর্ণ!</div><div style="font-size:13px;color:var(--muted);margin-top:2px">ফেরত নেওয়ার তারিখ পেরিয়ে গেছে</div></div></div></div>`:'';
+  return noticeBanner+overdueBanner
+    +'<div class="stats">'
     +'<div class="stat-card" data-action="statPanel:books"><div class="stat-icon si-gold">📚</div><div><div class="stat-val">'+books.length+'</div><div class="stat-lbl">মোট বই</div></div></div>'
     +'<div class="stat-card" data-action="statPanel:members"><div class="stat-icon si-blue">👥</div><div><div class="stat-val">'+Object.keys(S.members).length+'</div><div class="stat-lbl">সদস্য</div></div></div>'
-    +'<div class="stat-card" data-action="statPanel:borrowed"><div class="stat-icon si-red">⏳</div><div><div class="stat-val">'+pending+'</div><div class="stat-lbl">ধারে আছে</div></div></div>'
+    +'<div class="stat-card" data-action="statPanel:borrowed"><div class="stat-icon si-red">⏳</div><div><div class="stat-val">'+pending.length+'</div><div class="stat-lbl">ধারে আছে'+(overdueCnt>0?` <span class="badge-overdue badge">${overdueCnt}</span>`:'')+' </div></div></div>'
     +'<div class="stat-card" data-action="statPanel:available"><div class="stat-icon si-green">✅</div><div><div class="stat-val">'+availCount+'</div><div class="stat-lbl">পাওয়া যাচ্ছে</div></div></div>'
     +'</div>'
+    +renderChart()
     +(topBooks.length?'<div class="card"><div class="card-title">⭐ সেরা রেটিং প্রাপ্ত বই</div><div class="book-grid">'+topBooks.map(b=>bookCardHTML(b)).join('')+'</div></div>':'')
-    +'<div class="card"><div class="card-title">সাম্প্রতিক কার্যক্রম <span style="font-size:12px;color:var(--muted);font-weight:400">🔴 Live</span></div>'+(recent.length?recent.map(b=>'<div class="activity-item"><div class="act-dot" style="background:'+(b.ret?'var(--green)':'var(--blue)')+'"></div><div class="act-text"><b>'+esc(b.bookTitle)+'</b> — '+esc(b.memberName)+'</div><span class="badge '+(b.ret?'bg-green':'bg-blue')+'">'+(b.ret?'ফেরত':'ধারে')+'</span></div>').join(''):'<div class="empty">এখনো কোনো কার্যক্রম নেই</div>')+'</div>';
+    +'<div class="card"><div class="card-title">সাম্প্রতিক কার্যক্রম <span style="font-size:12px;color:var(--muted);font-weight:400">🔴 Live</span></div>'+(recent.length?recent.map(b=>{
+      const od=isOverdue(b);
+      return'<div class="activity-item"><div class="act-dot" style="background:'+(b.ret?'var(--green)':od?'var(--red)':'var(--blue)')+'"></div><div class="act-text"><b>'+esc(b.bookTitle)+'</b> — '+esc(b.memberName)+(od?' <span class="badge-overdue badge" style="font-size:10px">মেয়াদ শেষ</span>':'')+'</div><span class="badge '+(b.ret?'bg-green':od?'bg-red':'bg-blue')+'">'+(b.ret?'ফেরত':od?'মেয়াদোত্তীর্ণ':'ধারে')+'</span></div>';
+    }).join(''):'<div class="empty">এখনো কোনো কার্যক্রম নেই</div>')+'</div>';
+}
+
+// ══════════════════════════════════════════════
+// BOOKS with FILTER + SORT
+// ══════════════════════════════════════════════
+function getFilteredBooks(){
+  const q=S.search.toLowerCase().trim();
+  let list=booksArr().filter(b=>!q||(b.title+b.author+b.cat).toLowerCase().includes(q));
+  if(S.bookFilter==='available') list=list.filter(b=>b.avail>0);
+  if(S.bookFilter==='sort-rating') list=[...list].sort((a,b)=>avgRating(b.id)-avgRating(a.id));
+  if(S.bookFilter==='sort-new') list=[...list].sort((a,b)=>(b.addedAt_ts||0)-(a.addedAt_ts||0));
+  return list;
+}
+
+function renderFilterBar(){
+  const filters=[
+    {key:'all',label:'সব বই'},
+    {key:'available',label:'✅ পাওয়া যাচ্ছে'},
+    {key:'sort-rating',label:'⭐ রেটিং অনুযায়ী'},
+    {key:'sort-new',label:'🆕 নতুন আগে'},
+  ];
+  return'<div class="filter-bar">'+filters.map(f=>`<button class="filter-chip ${S.bookFilter===f.key?'on':''}" data-action="setFilter:${f.key}">${f.label}</button>`).join('')+'</div>';
 }
 
 function bookCardHTML(b,showAdminBtns){
@@ -1132,9 +1312,8 @@ function bookCardHTML(b,showAdminBtns){
 
 function renderBooks(){
   const isAdmin=S.role==='admin';
-  const q=S.search.toLowerCase().trim();
-  const list=booksArr().filter(b=>!q||(b.title+b.author+b.cat).toLowerCase().includes(q));
-  return'<div class="section-head"><div class="search-wrap"><span class="search-icon">🔍</span><input id="globalSearch" class="inp search-inp" placeholder="বই, লেখক বা বিভাগ..." value="'+esc(S.search)+'" style="margin-bottom:0" autocomplete="off"></div>'+(isAdmin?'<button class="btn btn-dark" data-action="openBook">+ নতুন বই</button>':'')+'</div><div class="book-grid">'+(list.length?list.map(b=>bookCardHTML(b,isAdmin)).join(''):'<div class="card" style="grid-column:1/-1"><div class="empty">কোনো বই পাওয়া যায়নি</div></div>')+'</div>';
+  const list=getFilteredBooks();
+  return'<div class="section-head"><div class="search-wrap"><span class="search-icon">🔍</span><input id="globalSearch" class="inp search-inp" placeholder="বই, লেখক বা বিভাগ..." value="'+esc(S.search)+'" style="margin-bottom:0" autocomplete="off"></div>'+(isAdmin?'<button class="btn btn-dark" data-action="openBook">+ নতুন বই</button>':'')+'</div>'+renderFilterBar()+'<div class="book-grid">'+(list.length?list.map(b=>bookCardHTML(b,isAdmin)).join(''):'<div class="card" style="grid-column:1/-1"><div class="empty">কোনো বই পাওয়া যায়নি</div></div>')+'</div>';
 }
 
 function renderBookDetail(){
@@ -1181,13 +1360,11 @@ function renderMyList(){
   const isPwAdmin=isAdmin&&!isEmailAdmin;
   const readBooks=booksArr().filter(b=>S.myReadlist[b.id]);
   const favBooks=booksArr().filter(b=>S.myFavs[b.id]);
-
   const notifBanner=(S.notifPermission==='default')
     ?`<div class="notif-banner"><p>📲 নতুন নোটিশ পেলে ফোনে নোটিফিকেশন পান</p><button class="btn btn-orange btn-sm" data-action="requestNotif">চালু করুন</button></div>`
     :(S.notifPermission==='granted'
       ?`<div class="notif-banner" style="background:var(--green-bg);border-color:rgba(45,122,82,.2)"><p style="color:var(--green)">✅ নোটিফিকেশন চালু আছে</p></div>`
       :`<div class="notif-banner" style="background:var(--red-bg);border-color:rgba(176,48,48,.15)"><p style="color:var(--red)">❌ নোটিফিকেশন বন্ধ আছে (ব্রাউজার সেটিংস থেকে চালু করুন)</p></div>`);
-
   const av=S.user.photoURL
     ?'<img src="'+esc(S.user.photoURL)+'" class="profile-avatar" referrerpolicy="no-referrer" onerror="this.outerHTML=\'<div class=profile-avatar-placeholder>'+((S.user.displayName||'?').charAt(0).toUpperCase())+'</div>\'">'
     :'<div class="profile-avatar-placeholder">'+(S.user.displayName||'?').charAt(0).toUpperCase()+'</div>';
@@ -1197,7 +1374,6 @@ function renderMyList(){
     +'<div class="card"><div class="card-title">❤️ প্রিয় বই <span class="badge bg-red">'+favBooks.length+'</span></div>'+(favBooks.length?'<div class="book-grid">'+favBooks.map(b=>'<div class="book-card" data-action="openBookDetail:'+b.id+'">'+bookCoverHTML(b)+'<div class="book-title">'+esc(b.title)+'</div><div class="book-author">'+esc(b.author)+'</div><button class="btn btn-ghost btn-sm" style="margin-top:8px;width:100%;justify-content:center" data-action="toggleFav:'+b.id+'" onclick="event.stopPropagation()">বাদ দিন</button></div>').join('')+'</div>':'<div class="empty">প্রিয় তালিকা খালি</div>')+'</div>';
 }
 
-// ── MEMBERS — Admin detail view ──
 function renderMemberDetail(m){
   const cnt=memberBorrowCount(m.id);
   const myBorrows=borrowsArr().filter(b=>b.memberId===m.id);
@@ -1235,14 +1411,15 @@ function renderMemberDetail(m){
     </div>
     <div class="card">
       <div class="card-title">⏳ বর্তমান ধার <span class="badge bg-red">${pending.length}</span></div>
-      ${pending.length?pending.map(b=>`
-        <div style="display:flex;align-items:center;justify-content:space-between;padding:12px;background:var(--blue-bg);border-radius:10px;margin-bottom:8px;gap:8px;flex-wrap:wrap">
+      ${pending.length?pending.map(b=>{
+        const od=isOverdue(b);
+        return`<div style="display:flex;align-items:center;justify-content:space-between;padding:12px;background:${od?'var(--red-bg)':'var(--blue-bg)'};border-radius:10px;margin-bottom:8px;gap:8px;flex-wrap:wrap">
           <div>
-            <div style="font-weight:700;font-size:14px">${esc(b.bookTitle)}</div>
+            <div style="font-weight:700;font-size:14px">${esc(b.bookTitle)} ${od?'<span class="badge-overdue badge">মেয়াদ শেষ!</span>':''}</div>
             <div style="font-size:12px;color:var(--muted)">ইস্যু: ${esc(b.issuedAt)} | ফেরত: ${esc(b.dueDate||'—')}</div>
           </div>
           <button class="btn btn-gold btn-sm" data-action="return:${b.id}">ফেরত নিন</button>
-        </div>`).join(''):'<div class="empty" style="padding:20px">কোনো বই ধারে নেই</div>'}
+        </div>`;}).join(''):'<div class="empty" style="padding:20px">কোনো বই ধারে নেই</div>'}
     </div>
     <div class="card">
       <div class="card-title">✅ ফেরত দেওয়া ইতিহাস <span class="badge bg-green">${returned.length}</span></div>
@@ -1256,46 +1433,39 @@ function renderMemberDetail(m){
 
 function renderMembers(){
   const isAdmin=S.role==='admin';
-  // Show detail if selected
   if(S.selectedMember)return renderMemberDetail(S.selectedMember);
-
   const q=S.search.toLowerCase().trim();
   const list=membersArr().filter(m=>!q||(m.name+m.phone).toLowerCase().includes(q));
-
   if(!isAdmin){
-    // Public view — show only name and address
     return'<div class="section-head"><div class="search-wrap"><span class="search-icon">🔍</span><input id="globalSearch" class="inp search-inp" placeholder="নাম খুঁজুন..." value="'+esc(S.search)+'" style="margin-bottom:0" autocomplete="off"></div></div>'
       +(list.length?'<div style="display:grid;grid-template-columns:repeat(auto-fill,minmax(200px,1fr));gap:12px">'
         +list.map(m=>`<div class="card" style="padding:16px;margin-bottom:0">
           <div style="width:40px;height:40px;border-radius:50%;background:var(--ink2);display:flex;align-items:center;justify-content:center;color:var(--gold3);font-size:16px;font-weight:700;margin-bottom:10px">${(m.name||'?').charAt(0).toUpperCase()}</div>
           <div style="font-weight:700;font-size:14px;margin-bottom:4px">${esc(m.name)}</div>
           <div style="font-size:12px;color:var(--muted)">📍 ${esc(m.address||'ঠিকানা নেই')}</div>
-        </div>`).join('')
-        +'</div>'
+        </div>`).join('')+'</div>'
       :'<div class="card"><div class="empty">কোনো সদস্য নেই</div></div>');
   }
-
-  // Admin view — cards with name+address, click for full detail
   return'<div class="section-head"><div class="search-wrap"><span class="search-icon">🔍</span><input id="globalSearch" class="inp search-inp" placeholder="নাম বা ফোন..." value="'+esc(S.search)+'" style="margin-bottom:0" autocomplete="off"></div><button class="btn btn-dark" data-action="openMember">+ নতুন সদস্য</button></div>'
-    +(list.length
-      ?list.map(m=>{
-        const cnt=memberBorrowCount(m.id);
-        return`<div class="member-card" data-action="openMemberDetail:${m.id}">
-          <div class="member-card-preview">
-            <div style="display:flex;align-items:center;gap:12px;flex:1;min-width:0">
-              <div style="width:44px;height:44px;border-radius:50%;background:var(--ink2);display:flex;align-items:center;justify-content:center;color:var(--gold3);font-size:18px;font-weight:700;flex-shrink:0">${(m.name||'?').charAt(0).toUpperCase()}</div>
-              <div style="flex:1;min-width:0">
-                <div style="font-weight:700;font-size:15px;white-space:nowrap;overflow:hidden;text-overflow:ellipsis">${esc(m.name)}</div>
-                <div style="font-size:13px;color:var(--muted);margin-top:2px">📍 ${esc(m.address||'ঠিকানা নেই')}</div>
-              </div>
-            </div>
-            <div style="display:flex;flex-direction:column;align-items:flex-end;gap:6px;flex-shrink:0">
-              <span class="badge ${cnt>0?'bg-amber':'bg-green'}">${cnt} ধারে</span>
-              <span style="font-size:11px;color:var(--lighter)">বিস্তারিত →</span>
+    +(list.length?list.map(m=>{
+      const cnt=memberBorrowCount(m.id);
+      const hasPendingOverdue=borrowsArr().filter(b=>b.memberId===m.id&&!b.ret).some(b=>isOverdue(b));
+      return`<div class="member-card" data-action="openMemberDetail:${m.id}">
+        <div class="member-card-preview">
+          <div style="display:flex;align-items:center;gap:12px;flex:1;min-width:0">
+            <div style="width:44px;height:44px;border-radius:50%;background:var(--ink2);display:flex;align-items:center;justify-content:center;color:var(--gold3);font-size:18px;font-weight:700;flex-shrink:0">${(m.name||'?').charAt(0).toUpperCase()}</div>
+            <div style="flex:1;min-width:0">
+              <div style="font-weight:700;font-size:15px;white-space:nowrap;overflow:hidden;text-overflow:ellipsis">${esc(m.name)}</div>
+              <div style="font-size:13px;color:var(--muted);margin-top:2px">📍 ${esc(m.address||'ঠিকানা নেই')}</div>
             </div>
           </div>
-        </div>`;}).join('')
-      :'<div class="card"><div class="empty">কোনো সদস্য নেই</div></div>');
+          <div style="display:flex;flex-direction:column;align-items:flex-end;gap:6px;flex-shrink:0">
+            <span class="badge ${cnt>0?(hasPendingOverdue?'bg-red':'bg-amber'):'bg-green'}">${cnt} ধারে${hasPendingOverdue?' ⚠️':''}</span>
+            <span style="font-size:11px;color:var(--lighter)">বিস্তারিত →</span>
+          </div>
+        </div>
+      </div>`;}).join('')
+    :'<div class="card"><div class="empty">কোনো সদস্য নেই</div></div>');
 }
 
 function renderBorrow(){
@@ -1305,7 +1475,12 @@ function renderBorrow(){
   const bkList=booksArr().filter(b=>b.avail>0&&(!bkQ||b.title.toLowerCase().includes(bkQ)));
   const mbQ=S.borrow.memberQuery.toLowerCase();
   const mbList=membersArr().filter(m=>!mbQ||m.name.toLowerCase().includes(mbQ)||m.phone.includes(mbQ));
-  return'<div class="card"><div class="card-title">বই ধার দিন</div><div class="borrow-section"><div><label style="font-size:12px;color:var(--muted);margin-bottom:5px;display:block">বই নির্বাচন</label><div class="drop-wrap" id="bkDropWrap"><input id="bkQuery" class="inp" placeholder="বইয়ের নাম লিখুন..." value="'+esc(S.borrow.bookQuery)+'" style="margin-bottom:0" autocomplete="off">'+(S.ui.dropBook&&bkList.length?'<div class="drop-list">'+bkList.map(b=>'<div class="drop-item" onclick="selectBook(\''+b.id+'\',\''+esc(b.title)+'\')">'+esc(b.title)+' ('+b.avail+' কপি)</div>').join('')+'</div>':'')+(S.borrow.bookTitle?'<div style="margin-top:6px"><span class="badge bg-green">✓ '+esc(S.borrow.bookTitle)+'</span></div>':'')+'</div></div><div><label style="font-size:12px;color:var(--muted);margin-bottom:5px;display:block">সদস্য নির্বাচন</label><div class="drop-wrap" id="mbDropWrap"><input id="mbQuery" class="inp" placeholder="সদস্যের নাম লিখুন..." value="'+esc(S.borrow.memberQuery)+'" style="margin-bottom:0" autocomplete="off">'+(S.ui.dropMember&&mbList.length?'<div class="drop-list">'+mbList.map(m=>'<div class="drop-item" onclick="selectMember(\''+m.id+'\',\''+esc(m.name)+'\')">'+esc(m.name)+' ('+m.phone+')</div>').join('')+'</div>':'')+(S.borrow.memberName?'<div style="margin-top:6px"><span class="badge bg-blue">✓ '+esc(S.borrow.memberName)+'</span></div>':'')+'</div></div></div><div style="display:flex;align-items:center;gap:12px;margin-top:6px"><label style="font-size:13px;color:var(--muted)">ফেরতের মেয়াদ:</label><select id="dueDays" class="inp" style="width:auto;margin-bottom:0"><option value="7">৭ দিন</option><option value="14" selected>১৪ দিন</option><option value="21">২১ দিন</option><option value="30">৩০ দিন</option></select></div><button class="btn btn-dark" style="width:100%;margin-top:14px;justify-content:center" data-action="issueBorrow">ধার নিশ্চিত করুন →</button></div><div class="card"><div class="card-title">পেন্ডিং ধার <span class="badge bg-red">'+pending.length+'</span></div><table class="tbl"><thead><tr><th>বই</th><th>সদস্য</th><th>ইস্যু</th><th>ফেরত</th><th></th></tr></thead><tbody>'+(pending.length?pending.map(b=>'<tr><td style="font-weight:600">'+esc(b.bookTitle)+'</td><td>'+esc(b.memberName)+'</td><td style="font-size:13px;color:var(--muted)">'+esc(b.issuedAt)+'</td><td style="font-size:13px;color:var(--muted)">'+esc(b.dueDate||'—')+'</td><td><button class="btn btn-gold btn-sm" data-action="return:'+b.id+'">ফেরত নিন</button></td></tr>').join(''):'<tr><td colspan="5" class="empty">কোনো পেন্ডিং নেই</td></tr>')+'</tbody></table></div><div class="card"><div class="card-title">ফেরত দেওয়া হয়েছে</div><table class="tbl"><thead><tr><th>বই</th><th>সদস্য</th><th>ইস্যু</th><th>ফেরত</th></tr></thead><tbody>'+(done.length?done.map(b=>'<tr><td>'+esc(b.bookTitle)+'</td><td>'+esc(b.memberName)+'</td><td style="font-size:13px;color:var(--muted)">'+esc(b.issuedAt)+'</td><td style="font-size:13px;color:var(--muted)">'+esc(b.returnedAt||'—')+'</td></tr>').join(''):'<tr><td colspan="4" class="empty">কোনো রেকর্ড নেই</td></tr>')+'</tbody></table></div>';
+  return'<div class="card"><div class="card-title">বই ধার দিন</div><div class="borrow-section"><div><label style="font-size:12px;color:var(--muted);margin-bottom:5px;display:block">বই নির্বাচন</label><div class="drop-wrap" id="bkDropWrap"><input id="bkQuery" class="inp" placeholder="বইয়ের নাম লিখুন..." value="'+esc(S.borrow.bookQuery)+'" style="margin-bottom:0" autocomplete="off">'+(S.ui.dropBook&&bkList.length?'<div class="drop-list">'+bkList.map(b=>'<div class="drop-item" onclick="selectBook(\''+b.id+'\',\''+esc(b.title)+'\')">'+esc(b.title)+' ('+b.avail+' কপি)</div>').join('')+'</div>':'')+(S.borrow.bookTitle?'<div style="margin-top:6px"><span class="badge bg-green">✓ '+esc(S.borrow.bookTitle)+'</span></div>':'')+'</div></div><div><label style="font-size:12px;color:var(--muted);margin-bottom:5px;display:block">সদস্য নির্বাচন</label><div class="drop-wrap" id="mbDropWrap"><input id="mbQuery" class="inp" placeholder="সদস্যের নাম লিখুন..." value="'+esc(S.borrow.memberQuery)+'" style="margin-bottom:0" autocomplete="off">'+(S.ui.dropMember&&mbList.length?'<div class="drop-list">'+mbList.map(m=>'<div class="drop-item" onclick="selectMember(\''+m.id+'\',\''+esc(m.name)+'\')">'+esc(m.name)+' ('+m.phone+')</div>').join('')+'</div>':'')+(S.borrow.memberName?'<div style="margin-top:6px"><span class="badge bg-blue">✓ '+esc(S.borrow.memberName)+'</span></div>':'')+'</div></div></div><div style="display:flex;align-items:center;gap:12px;margin-top:6px"><label style="font-size:13px;color:var(--muted)">ফেরতের মেয়াদ:</label><select id="dueDays" class="inp" style="width:auto;margin-bottom:0"><option value="7">৭ দিন</option><option value="14" selected>১৪ দিন</option><option value="21">২১ দিন</option><option value="30">৩০ দিন</option></select></div><button class="btn btn-dark" style="width:100%;margin-top:14px;justify-content:center" data-action="issueBorrow">ধার নিশ্চিত করুন →</button></div>'
+    +'<div class="card"><div class="card-title">পেন্ডিং ধার <span class="badge bg-red">'+pending.length+'</span></div><table class="tbl"><thead><tr><th>বই</th><th>সদস্য</th><th>ইস্যু</th><th>ফেরত</th><th></th></tr></thead><tbody>'+(pending.length?pending.map(b=>{
+      const od=isOverdue(b);
+      return'<tr style="'+(od?'background:var(--red-bg)':'')+'"><td style="font-weight:600">'+esc(b.bookTitle)+(od?' <span class="badge-overdue badge" style="font-size:10px">মেয়াদ শেষ!</span>':'')+'</td><td>'+esc(b.memberName)+'</td><td style="font-size:13px;color:var(--muted)">'+esc(b.issuedAt)+'</td><td style="font-size:13px;color:'+(od?'var(--red)':'var(--muted)')+'">'+esc(b.dueDate||'—')+'</td><td><button class="btn btn-gold btn-sm" data-action="return:'+b.id+'">ফেরত নিন</button></td></tr>';
+    }).join(''):'<tr><td colspan="5" class="empty">কোনো পেন্ডিং নেই</td></tr>')+'</tbody></table></div>'
+    +'<div class="card"><div class="card-title">ফেরত দেওয়া হয়েছে</div><table class="tbl"><thead><tr><th>বই</th><th>সদস্য</th><th>ইস্যু</th><th>ফেরত</th></tr></thead><tbody>'+(done.length?done.map(b=>'<tr><td>'+esc(b.bookTitle)+'</td><td>'+esc(b.memberName)+'</td><td style="font-size:13px;color:var(--muted)">'+esc(b.issuedAt)+'</td><td style="font-size:13px;color:var(--muted)">'+esc(b.returnedAt||'—')+'</td></tr>').join(''):'<tr><td colspan="4" class="empty">কোনো রেকর্ড নেই</td></tr>')+'</tbody></table></div>';
 }
 
 function renderNotices(){
@@ -1320,7 +1495,7 @@ function renderNotices(){
     <button class="btn btn-orange" data-action="openNotice">+ নতুন নোটিশ</button>
   </div>
   <div style="font-size:13px;color:var(--muted);margin-bottom:16px;background:var(--orange-bg);border:1px solid rgba(201,106,16,.2);border-radius:8px;padding:10px 14px;line-height:1.6">
-    ℹ️ নোটিশ প্রকাশ করলে অ্যাপে প্রবেশের পর সদস্যরা <b>একবার</b> popup দেখবেন। মেয়াদ পেরিয়ে গেলে স্বয়ংক্রিয়ভাবে লুকিয়ে যাবে।
+    ℹ️ নোটিশ প্রকাশ করলে অ্যাপে প্রবেশের পর সদস্যরা <b>একবার</b> popup দেখবেন।
   </div>
   ${all.length?all.map(n=>{
     const expired=isNoticeExpired(n);
@@ -1348,9 +1523,7 @@ function renderComplaints(){
   const isAdmin=S.role==='admin';
   const list=Object.entries(S.complaints).map(([id,v])=>({id,...v})).reverse();
   const unread=list.filter(c=>!c.read).length;
-
   if(!isAdmin){
-    const needLogin=(!S.user&&!S.complaintAnon);
     return`<div class="card">
       <div class="card-title">📢 অভিযোগ / পরামর্শ পাঠান</div>
       <p style="font-size:13px;color:var(--muted);margin-bottom:14px">আপনার পরামর্শ বা অভিযোগ পাঠান।</p>
@@ -1361,16 +1534,14 @@ function renderComplaints(){
           <button class="id-btn ${!S.complaintAnon?'on':''}" data-action="complaintAnonFalse">👤 পরিচয় প্রকাশ</button>
         </div>
         ${!S.complaintAnon?
-          (S.user
-            ?`<div style="padding:10px 14px;background:var(--green-bg);border-radius:8px;border:1px solid rgba(45,122,82,.2);font-size:13px;color:var(--green)">✅ নাম প্রকাশিত হবে: <b>${esc(S.user.displayName||'')}</b></div>`
-            :`<div style="padding:10px 14px;background:var(--orange-bg);border-radius:8px;border:1px solid rgba(201,106,16,.2);font-size:13px;color:var(--orange)">⚠️ পরিচয় প্রকাশ করতে <button class="btn btn-blue btn-sm" data-action="openLogin" style="margin-left:6px">লগইন করুন</button></div>`)
-          :`<div style="padding:10px 14px;background:var(--cream);border-radius:8px;border:1px solid var(--border);font-size:13px;color:var(--muted)">🔒 আপনার পরিচয় সম্পূর্ণ গোপন থাকবে।</div>`}
+          (S.user?`<div style="padding:10px 14px;background:var(--green-bg);border-radius:8px;font-size:13px;color:var(--green)">✅ নাম প্রকাশিত হবে: <b>${esc(S.user.displayName||'')}</b></div>`
+            :`<div style="padding:10px 14px;background:var(--orange-bg);border-radius:8px;font-size:13px;color:var(--orange)">⚠️ পরিচয় প্রকাশ করতে <button class="btn btn-blue btn-sm" data-action="openLogin" style="margin-left:6px">লগইন করুন</button></div>`)
+          :`<div style="padding:10px 14px;background:var(--cream);border-radius:8px;font-size:13px;color:var(--muted)">🔒 আপনার পরিচয় সম্পূর্ণ গোপন থাকবে।</div>`}
       </div>
       <textarea id="complaintInput" class="inp" rows="4" placeholder="এখানে লিখুন..." style="resize:vertical;min-height:100px">${esc(S.complaintText||'')}</textarea>
       <button class="btn btn-dark" style="width:100%;justify-content:center" data-action="submitComplaint">পাঠান →</button>
     </div>`;
   }
-
   return'<div class="card"><div class="card-title">📢 অভিযোগ / পরামর্শ <span class="badge bg-red">'+unread+' নতুন</span></div>'
     +(list.length?list.map(c=>`
       <div style="padding:14px;border-radius:10px;background:${c.read?'var(--cream)':'var(--blue-bg)'};border:1px solid ${c.read?'var(--border)':'rgba(42,95,158,.2)'};margin-bottom:10px">
@@ -1384,17 +1555,61 @@ function renderComplaints(){
     :'<div class="empty">কোনো অভিযোগ নেই</div>')+'</div>';
 }
 
+// ══════════════════════════════════════════════
+// SETTINGS — Security info সহ
+// ══════════════════════════════════════════════
 function renderSettings(){
   const books=booksArr(),members=membersArr(),borrows=borrowsArr();
   const onlineList=Object.values(S.onlineUsers||{});
   const isEmailAdmin=S.user&&isAdminEmail(S.user.email);
   const isPwAdmin=S.role==='admin'&&!isEmailAdmin;
-  const onlineSec='<div class="card"><div class="card-title">🟢 লগইনকৃত ব্যবহারকারী <span class="badge bg-green">'+onlineList.length+'</span></div>'+(onlineList.length?onlineList.map(u=>'<div class="logged-user-item">'+(u.photo?'<img src="'+esc(u.photo)+'" class="logged-user-av" referrerpolicy="no-referrer" onerror="this.style.display=\'none\'">'  :'<div class="logged-user-av-p">'+(u.name||'?').charAt(0).toUpperCase()+'</div>')+'<div style="flex:1"><div style="font-weight:600;font-size:14px">'+esc(u.name||'অজানা')+'</div><div style="font-size:12px;color:var(--muted)">'+esc(u.email||'')+'</div></div>'+(u.isAdmin?'<span class="badge bg-amber">অ্যাডমিন</span>':'<span class="badge bg-blue">সদস্য</span>')+'</div>').join(''):'<div class="empty">কেউ লগইন নেই</div>')+'</div>';
-  const adminEmailsSec='<div class="card"><div class="card-title">✉️ অনুমোদিত Admin ইমেইল</div>'+ADMIN_EMAILS.map(e=>'<div style="padding:10px 14px;border-radius:8px;background:var(--cream);border:1px solid var(--border);margin-bottom:6px;font-family:monospace;font-size:13px;color:var(--ink2)">'+esc(e)+'</div>').join('')+'<div style="font-size:12px;color:var(--muted);margin-top:10px">💡 ইমেইল পরিবর্তন করতে index.html এ ADMIN_EMAILS তালিকা সম্পাদনা করুন।</div></div>';
+
+  // Admin emails from Firebase
+  const adminEmailEntries=Object.entries(ADMIN_EMAILS_FROM_FB);
+
+  const securitySec=`
+  <div class="card">
+    <div class="card-title">🔐 Security তথ্য</div>
+    <div class="security-info">
+      ✅ Admin পাসওয়ার্ড SHA-256 hash করে সংরক্ষিত হয়<br>
+      ✅ Admin ইমেইল তালিকা Firebase থেকে নিয়ন্ত্রিত<br>
+      ✅ কোডে কোনো hardcoded credentials নেই<br>
+      ✅ নতুন পাসওয়ার্ড স্বয়ংক্রিয়ভাবে hash হয়ে সেভ হয়
+    </div>
+  </div>`;
+
+  const adminEmailSec=`
+  <div class="card">
+    <div class="card-title">✉️ Admin ইমেইল ব্যবস্থাপনা
+      <span class="badge bg-green">${adminEmailEntries.length} টি</span>
+    </div>
+    <div style="font-size:12px;color:var(--muted);margin-bottom:12px;background:var(--blue-bg);border-radius:8px;padding:10px;line-height:1.6">
+      💡 এখান থেকে যোগ/বাদ করলে কোড পরিবর্তন ছাড়াই admin নিয়ন্ত্রণ হবে।<br>
+      Firebase Console > Realtime Database > <code>adminEmails</code> তেও সরাসরি পরিবর্তন করা যাবে।
+    </div>
+    ${adminEmailEntries.length?adminEmailEntries.map(([key,_])=>{
+      const email=key.replace(/__at__/g,'@').replace(/_/g,'.');
+      return`<div style="display:flex;align-items:center;justify-content:space-between;padding:10px 14px;border-radius:8px;background:var(--cream);border:1px solid var(--border);margin-bottom:6px">
+        <span style="font-family:monospace;font-size:13px">${esc(email)}</span>
+        <button class="btn btn-ghost btn-sm" data-action="delAdminEmail:${key}" style="color:var(--red);border-color:var(--red)">🗑️</button>
+      </div>`;
+    }).join(''):'<div class="empty" style="padding:16px">কোনো admin ইমেইল নেই</div>'}
+    <div style="display:flex;gap:10px;margin-top:12px">
+      <input id="fNewAdminEmail" class="inp" style="margin-bottom:0;flex:1" type="email" placeholder="নতুন admin ইমেইল" value="${esc(S.form.newAdminEmail||'')}">
+      <button class="btn btn-dark" data-action="addAdminEmail">যোগ করুন</button>
+    </div>
+  </div>`;
+
+  const onlineSec='<div class="card"><div class="card-title">🟢 লগইনকৃত ব্যবহারকারী <span class="badge bg-green">'+onlineList.length+'</span></div>'+(onlineList.length?onlineList.map(u=>'<div class="logged-user-item">'+(u.photo?'<img src="'+esc(u.photo)+'" class="logged-user-av" referrerpolicy="no-referrer" onerror="this.style.display=\'none\'">':'<div class="logged-user-av-p">'+(u.name||'?').charAt(0).toUpperCase()+'</div>')+'<div style="flex:1"><div style="font-weight:600;font-size:14px">'+esc(u.name||'অজানা')+'</div><div style="font-size:12px;color:var(--muted)">'+esc(u.email||'')+'</div></div>'+(u.isAdmin?'<span class="badge bg-amber">অ্যাডমিন</span>':'<span class="badge bg-blue">সদস্য</span>')+'</div>').join(''):'<div class="empty">কেউ লগইন নেই</div>')+'</div>';
+
   const adminExitBtn=isPwAdmin?'<div class="card"><div class="card-title">অ্যাডমিন</div><button class="btn btn-ghost" data-action="adminExitMode" style="color:var(--red);border-color:var(--red)">Admin মোড বন্ধ করুন</button></div>':'';
-  return onlineSec+adminEmailsSec+adminExitBtn
-    +'<div class="card"><div class="card-title">পাসওয়ার্ড ব্যবস্থাপনা</div><table class="tbl"><thead><tr><th>#</th><th>পাসওয়ার্ড</th><th></th></tr></thead><tbody>'+S.passes.map((p,i)=>'<tr><td style="color:var(--muted)">'+(i+1)+'</td><td><span style="font-family:monospace">'+'•'.repeat(Math.min(p.length,12))+'</span></td><td><button class="btn btn-ghost btn-sm" data-action="delPass:'+encodeURIComponent(p)+'">মুছুন</button></td></tr>').join('')+'</tbody></table><div style="display:flex;gap:10px;margin-top:16px"><input id="fNewPass" class="inp" style="margin-bottom:0;flex:1" type="password" placeholder="নতুন পাসওয়ার্ড" value="'+esc(S.form.newPass||'')+'"><button class="btn btn-dark" data-action="addPass">যোগ করুন</button></div></div>'
-    +'<div class="card"><div class="card-title">পরিসংখ্যান</div><table class="tbl"><tbody><tr><td>মোট বই</td><td style="font-weight:700">'+books.length+'</td></tr><tr><td>মোট কপি</td><td style="font-weight:700">'+books.reduce((a,b)=>a+b.total,0)+'</td></tr><tr><td>মোট সদস্য</td><td style="font-weight:700">'+members.length+'</td></tr><tr><td>সর্বমোট ধার</td><td style="font-weight:700">'+borrows.length+' বার</td></tr><tr><td>এখন ধারে</td><td style="font-weight:700">'+borrows.filter(b=>!b.ret).length+'</td></tr></tbody></table></div>';
+
+  return securitySec+adminEmailSec+onlineSec+adminExitBtn
+    +'<div class="card"><div class="card-title">🔑 পাসওয়ার্ড ব্যবস্থাপনা</div>'
+    +'<div style="font-size:12px;color:var(--muted);margin-bottom:10px;background:var(--green-bg);border-radius:8px;padding:10px;line-height:1.6">🔒 পাসওয়ার্ডগুলো SHA-256 hash আকারে সংরক্ষিত। আসল পাসওয়ার্ড কেউ দেখতে পাবে না।</div>'
+    +'<table class="tbl"><thead><tr><th>#</th><th>হ্যাশ (প্রথম ১৬ অক্ষর)</th><th></th></tr></thead><tbody>'+S.passes.map((p,i)=>'<tr><td style="color:var(--muted)">'+(i+1)+'</td><td><span style="font-family:monospace;font-size:12px">'+esc(String(p).substring(0,16))+'...</span></td><td><button class="btn btn-ghost btn-sm" data-action="delPass:'+encodeURIComponent(p)+'">মুছুন</button></td></tr>').join('')+'</tbody></table>'
+    +'<div style="display:flex;gap:10px;margin-top:16px"><input id="fNewPass" class="inp" style="margin-bottom:0;flex:1" type="password" placeholder="নতুন পাসওয়ার্ড (hash হয়ে সেভ হবে)" value="'+esc(S.form.newPass||'')+'"><button class="btn btn-dark" data-action="addPass">যোগ করুন</button></div></div>'
+    +'<div class="card"><div class="card-title">📊 পরিসংখ্যান</div><table class="tbl"><tbody><tr><td>মোট বই</td><td style="font-weight:700">'+books.length+'</td></tr><tr><td>মোট কপি</td><td style="font-weight:700">'+books.reduce((a,b)=>a+b.total,0)+'</td></tr><tr><td>মোট সদস্য</td><td style="font-weight:700">'+members.length+'</td></tr><tr><td>সর্বমোট ধার</td><td style="font-weight:700">'+borrows.length+' বার</td></tr><tr><td>এখন ধারে</td><td style="font-weight:700">'+borrows.filter(b=>!b.ret).length+'</td></tr><tr><td>মেয়াদোত্তীর্ণ</td><td style="font-weight:700;color:var(--red)">'+borrows.filter(b=>!b.ret&&isOverdue(b)).length+'</td></tr></tbody></table></div>';
 }
 
 function renderModal(){
